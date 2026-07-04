@@ -1,43 +1,54 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><title>Gallery</title>
 <style>
 body{font-family:Arial}
-.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px}
+h2{margin:16px 0 8px}
+h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
+.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
+.printed-card{border-color:#ddd;opacity:0.6}
 img{width:200px}
-#err{color:red}
+#err{color:red;margin:8px}
 </style></head>
-<body><h2>Print Queue</h2><p id="err"></p><div id="g"></div>
+<body>
+<h2>Print Queue</h2>
+<p id="err"></p>
+<div id="queue"></div>
+<h3>Already Printed</h3>
+<div id="printed"></div>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbw1ds4_aCREYGuYYjnb2ClInUje3b307VSL5G-KB_DcOEuxzN5HFeQpxGxdh5QfN5ae/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
 
-function fileId(url){
-  const m=url.match(/[?&]id=([^&]+)/);
-  return m ? m[1] : null;
-}
-function thumbUrl(url){
-  const id=fileId(url);
-  return id ? "https://drive.google.com/thumbnail?id="+id+"&sz=w800" : url;
-}
-function dlUrl(url){
-  const id=fileId(url);
-  return id ? "https://drive.google.com/uc?export=download&id="+id : url;
+function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
+function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
+function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
+
+function makeCard(p,isPrinted){
+  const div=document.createElement('div');
+  div.className='card'+(isPrinted?' printed-card':'');
+  div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
+  <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
+  <button ${isPrinted?'disabled':''}>Mark Printed</button>`;
+  if(!isPrinted){
+    div.querySelector('button').onclick=async()=>{
+      div.querySelector('button').disabled=true;
+      await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"printed",id:p.id})});
+      setTimeout(load,1500);
+    };
+  }
+  return div;
 }
 
 async function load(){
   try{
-    const d=await fetch(API_URL+"?action=list").then(r=>r.json());
-    const g=document.getElementById('g');g.innerHTML="";
+    const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
+    const queue=document.getElementById('queue');
+    const printed=document.getElementById('printed');
+    queue.innerHTML="";
+    printed.innerHTML="";
     d.forEach(p=>{
-      const div=document.createElement('div');div.className='card';
-      div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>Status:${p.printed?"Printed":"New"}<br>
-      <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
-      <button ${p.printed?"disabled":""}>Mark Printed</button>`;
-      div.querySelector('button').onclick=async()=>{
-        div.querySelector('button').disabled=true;
-        await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"printed",id:p.id})});
-        setTimeout(load,1500);
-      };
-      g.appendChild(div);
+      if(p.printed) printed.appendChild(makeCard(p,true));
+      else queue.appendChild(makeCard(p,false));
     });
+    if(!queue.children.length) queue.innerHTML="<p style='color:#999'>No photos waiting to print.</p>";
   }catch(e){
     document.getElementById('err').textContent="Error loading gallery: "+e.message;
   }
