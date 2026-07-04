@@ -1,22 +1,46 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><title>Gallery</title>
-<style>body{font-family:Arial}.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px}img{width:200px}</style></head>
-<body><h2>Print Queue</h2><div id="g"></div>
+<style>
+body{font-family:Arial}
+.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px}
+img{width:200px}
+#err{color:red}
+</style></head>
+<body><h2>Print Queue</h2><p id="err"></p><div id="g"></div>
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
+
+function fileId(url){
+  const m=url.match(/[?&]id=([^&]+)/);
+  return m ? m[1] : null;
+}
+function thumbUrl(url){
+  const id=fileId(url);
+  return id ? "https://drive.google.com/thumbnail?id="+id+"&sz=w800" : url;
+}
+function dlUrl(url){
+  const id=fileId(url);
+  return id ? "https://drive.google.com/uc?export=download&id="+id : url;
+}
+
 async function load(){
- let d=await fetch(API_URL+"?action=list").then(r=>r.json());
- let g=document.getElementById('g');g.innerHTML="";
- d.forEach(p=>{
-  let div=document.createElement('div');div.className='card';
-  div.innerHTML=`<img src="${p.url}"><br>${p.name}<br>Status:${p.printed?"Printed":"New"}<br>
-  <a href="${p.url}" download>Download</a><br>
-  <button ${p.printed?"disabled":""}>Mark Printed</button>`;
-  div.querySelector('button').onclick=async()=>{
-    await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"printed",id:p.id})});
-    load();
-  };
-  g.appendChild(div);
- });
+  try{
+    const d=await fetch(API_URL+"?action=list").then(r=>r.json());
+    const g=document.getElementById('g');g.innerHTML="";
+    d.forEach(p=>{
+      const div=document.createElement('div');div.className='card';
+      div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>Status:${p.printed?"Printed":"New"}<br>
+      <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
+      <button ${p.printed?"disabled":""}>Mark Printed</button>`;
+      div.querySelector('button').onclick=async()=>{
+        div.querySelector('button').disabled=true;
+        await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"printed",id:p.id})});
+        setTimeout(load,1500);
+      };
+      g.appendChild(div);
+    });
+  }catch(e){
+    document.getElementById('err').textContent="Error loading gallery: "+e.message;
+  }
 }
 load();setInterval(load,5000);
 </script></body></html>
