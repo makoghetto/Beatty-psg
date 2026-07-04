@@ -43,12 +43,13 @@ function drawPhoto(ctx){
 async function upload(imageData){
   document.getElementById('status').textContent="Uploading...";
   try{
-    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
-    document.getElementById('status').textContent=await r.text();
+    await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
+    document.getElementById('status').textContent="Done! Check the gallery.";
   }catch(err){
     document.getElementById('status').textContent="Upload failed: "+err.message;
   }
 }
+
 
 document.getElementById('snap').onclick=()=>{
   if(!v.videoWidth){document.getElementById('status').textContent="Camera not ready";return;}
