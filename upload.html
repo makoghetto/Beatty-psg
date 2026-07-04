@@ -1,38 +1,57 @@
-function thumbUrl(url){
-  const m=url.match(/[?&]id=([^&]+)/);
-  return m?"https://drive.google.com/thumbnail?id="+m[1]+"&sz=w400":url;
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Gallery</title>
+<style>
+body{font-family:Arial}
+h2{margin:16px 0 8px}
+h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
+.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
+.printed-card{border-color:#ddd;opacity:0.6}
+img{width:200px}
+#err{color:red;margin:8px}
+</style></head>
+<body>
+<h2>Print Queue</h2>
+<p id="err"></p>
+<div id="queue"></div>
+<h3>Already Printed</h3>
+<div id="printed"></div>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
+
+function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
+function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
+function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
+
+function makeCard(p,isPrinted){
+  const div=document.createElement('div');
+  div.className='card'+(isPrinted?' printed-card':'');
+  div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
+  <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
+  <button ${isPrinted?'disabled':''}>Mark Printed</button>`;
+  if(!isPrinted){
+    div.querySelector('button').onclick=async()=>{
+      div.querySelector('button').disabled=true;
+      await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"printed",id:p.id})});
+      setTimeout(load,1500);
+    };
+  }
+  return div;
 }
 
-function loadRecent(){
-  fetch(API_URL+"?action=list").then(r=>r.json()).then(d=>{
-    const recent=d.slice(-3).reverse();
-    const el=document.getElementById('recent');
-    el.innerHTML="";
-    recent.forEach(p=>{
-      const img=document.createElement('img');
-      img.src=thumbUrl(p.url);
-      img.title=p.name;
-      el.appendChild(img);
+async function load(){
+  try{
+    const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
+    const queue=document.getElementById('queue');
+    const printed=document.getElementById('printed');
+    queue.innerHTML="";
+    printed.innerHTML="";
+    d.forEach(p=>{
+      if(p.printed) printed.appendChild(makeCard(p,true));
+      else queue.appendChild(makeCard(p,false));
     });
-  }).catch(()=>{});
+    if(!queue.children.length) queue.innerHTML="<p style='color:#999'>No photos waiting to print.</p>";
+  }catch(e){
+    document.getElementById('err').textContent="Error loading gallery: "+e.message;
+  }
 }
-
-function upload(imageData){
-  document.getElementById('status').textContent="Sending...";
-  fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
-  document.getElementById('status').textContent="Sent! Check the gallery in a moment.";
-  setTimeout(loadRecent,4000);
-}
-
-document.getElementById('snap').onclick=()=>{
-  if(!v.videoWidth){document.getElementById('status').textContent="Camera not ready";return;}
-  const ctx=c.getContext('2d');
-  drawPhoto(ctx);
-  const f=new Image();
-  f.onload=()=>{ctx.drawImage(f,0,0,W,H);upload(c.toDataURL('image/jpeg',0.92));};
-  f.onerror=()=>{upload(c.toDataURL('image/jpeg',0.92));};
-  f.src=FRAME;
-};
-
-loadRecent();
-setInterval(loadRecent,10000);
+load();setInterval(load,5000);
+</script></body></html>
