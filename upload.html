@@ -18,12 +18,13 @@ document.getElementById('snap').onclick=async()=>{
  const x=c.getContext('2d');
  x.filter="contrast(1.08) saturate(1.06) brightness(1.05)";
  x.drawImage(v,0,0);
+ f.onerror = () => { /* upload without frame, or show error */ }
  const f=new Image();
  f.onload=async()=>{
    x.drawImage(f,0,0,c.width,c.height);
    const data=c.toDataURL('image/jpeg',0.92);
    document.getElementById('status').textContent="Uploading...";
-   const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:data})});
+   const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:data})});
    document.getElementById('status').textContent=await r.text();
  };
  f.src=FRAME;
