@@ -40,14 +40,10 @@ function drawPhoto(ctx){
   ctx.filter="none";
 }
 
-async function upload(imageData){
-  document.getElementById('status').textContent="Uploading...";
-  try{
-    await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
-    document.getElementById('status').textContent="Done! Check the gallery.";
-  }catch(err){
-    document.getElementById('status').textContent="Upload failed: "+err.message;
-  }
+function upload(imageData){
+  document.getElementById('status').textContent="Sending...";
+  fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
+  document.getElementById('status').textContent="Sent! Check the gallery in a moment.";
 }
 
 
