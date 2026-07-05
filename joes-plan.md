@@ -1,3 +1,12 @@
+
+Pages:
+Camera
+https://makoghetto.github.io/Beatty-psg/upload.html
+- For taking photos and marking Colour and Ticket no.
+
+Gallery https://makoghetto.github.io/Beatty-psg/gallery.html
+ - For viewing, downloading and marking as printed 
+
 Minimum roles:
 Photographer - uses their phone to take a framed photo of the elderly and carries tickets with one specific colour
 
