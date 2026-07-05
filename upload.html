@@ -1,25 +1,82 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>Golden Fiesta Camera</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{font-family:Arial;text-align:center;margin:20px}
-#preview-wrap{display:inline-block;position:relative;max-width:95vw}
+*{box-sizing:border-box}
+body{font-family:Arial;text-align:center;margin:12px;background:#111;color:#fff}
+h2{margin:0 0 10px}
+
+#cam-container{display:inline-block;max-width:95vw;width:100%}
+
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#222;padding:10px 14px;border-radius:10px 10px 0 0;gap:10px
+}
+#colour{
+  font-size:18px;padding:8px 10px;border-radius:6px;border:none;
+  font-weight:bold;cursor:pointer;min-width:110px
+}
+#counter-wrap{display:flex;align-items:center;gap:8px;flex:1;justify-content:center}
+.cnt-btn{
+  font-size:32px;line-height:1;width:54px;height:54px;border-radius:50%;
+  border:none;background:#444;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;margin:0
+}
+.cnt-btn:active{background:#666}
+#numDisplay{
+  font-size:52px;font-weight:bold;font-family:monospace;
+  background:#000;color:#0f0;padding:4px 12px;border-radius:8px;
+  min-width:100px;text-align:center;letter-spacing:4px
+}
+
+#preview-wrap{position:relative}
 video{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
 #overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 canvas{display:none}
-button{padding:12px 18px;margin:8px}
-#recent{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;max-width:95vw;margin-left:auto;margin-right:auto}
-#recent img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px;border:2px solid #ccc}
+
+#snap{
+  display:block;width:100%;max-width:95vw;margin:10px auto;
+  padding:28px 0;font-size:36px;font-weight:bold;letter-spacing:2px;
+  background:#c0392b;color:#fff;border:none;border-radius:10px;
+  cursor:pointer;touch-action:manipulation
+}
+#snap:active{background:#e74c3c}
+
+#status{margin:6px 0;font-size:16px;color:#aaa;min-height:22px}
+
+#recent{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  margin-top:10px;max-width:95vw;margin-left:auto;margin-right:auto
+}
+#recent img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px;border:2px solid #444}
 </style>
 </head><body>
 <h2>Golden Fiesta 2026</h2>
-<div id="preview-wrap">
-  <video id="video" autoplay playsinline></video>
-  <img id="overlay" src="frame.png" alt="">
-</div><br>
-<button id="snap">Take Photo</button>
+<div id="cam-container">
+  <div id="topbar">
+    <select id="colour">
+      <option value="RED">🔴 Red</option>
+      <option value="BLU">🔵 Blue</option>
+      <option value="GRN">🟢 Green</option>
+      <option value="ORG">🟠 Orange</option>
+      <option value="BLK">⚫ Black</option>
+    </select>
+    <div id="counter-wrap">
+      <button class="cnt-btn" id="dec">−</button>
+      <button class="cnt-btn" id="inc">+</button>
+    </div>
+    <div id="numDisplay">001</div>
+  </div>
+  <div id="preview-wrap">
+    <video id="video" autoplay playsinline></video>
+    <img id="overlay" src="frame.png" alt="">
+  </div>
+</div>
+<button id="snap">TAKE PHOTO</button>
 <canvas id="canvas"></canvas>
 <p id="status"></p>
 <div id="recent"></div>
+
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
 const FRAME="frame.png";
@@ -27,6 +84,17 @@ const W=1800,H=1200;
 const v=document.getElementById('video');
 const c=document.getElementById('canvas');
 c.width=W;c.height=H;
+
+let currentNum=parseInt(localStorage.getItem('photoNum')||'1');
+function setNum(n){
+  n=Math.max(0,Math.min(999,n));
+  currentNum=n;
+  localStorage.setItem('photoNum',n);
+  document.getElementById('numDisplay').textContent=String(n).padStart(3,'0');
+}
+setNum(currentNum);
+document.getElementById('dec').onclick=()=>setNum(currentNum-1);
+document.getElementById('inc').onclick=()=>setNum(currentNum+1);
 
 navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}})
   .then(s=>v.srcObject=s)
@@ -63,9 +131,13 @@ function loadRecent(){
 }
 
 function upload(imageData){
+  const colour=document.getElementById('colour').value;
+  const num=String(currentNum).padStart(3,'0');
   document.getElementById('status').textContent="Sending...";
-  fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({image:imageData})});
-  document.getElementById('status').textContent="Sent! Check the gallery in a moment.";
+  fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify({image:imageData,colour:colour,num:num})});
+  document.getElementById('status').textContent="Sent! ["+colour+"-"+num+"] Check the gallery.";
+  setNum(currentNum+1);
   setTimeout(loadRecent,7000);
   setTimeout(loadRecent,14000);
 }
