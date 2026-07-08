@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Golden Fiesta — Live Display</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden}
+
+#header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;background:#1a1a1a;border-bottom:1px solid #333;
+}
+#header h1{font-size:20px;letter-spacing:1px}
+#controls{display:flex;align-items:center;gap:10px}
+#countSel,#expandBtn{
+  font-size:15px;padding:7px 14px;border-radius:7px;
+  border:none;background:#333;color:#fff;cursor:pointer;
+}
+#expandBtn{background:#2a4a2a;font-size:14px}
+#expandBtn:hover{background:#3a6a3a}
+
+#grid{
+  display:grid;gap:14px;padding:14px;
+  height:calc(100vh - 53px);align-content:start;overflow-y:auto;
+}
+.g2{grid-template-columns:1fr 1fr}
+.g6{grid-template-columns:repeat(3,1fr)}
+
+.card{
+  background:#1e1e1e;border-radius:10px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;padding-bottom:12px;
+}
+.card .photo{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.card .name{
+  font-family:monospace;font-size:13px;color:#aaa;
+  margin:8px 0 6px;letter-spacing:1px;
+}
+.card .qr{background:#fff;padding:5px;border-radius:6px;display:block}
+.card .label{font-size:12px;color:#666;margin-top:6px}
+
+#overlay{
+  display:none;position:fixed;inset:0;
+  background:#0d0d0d;z-index:200;flex-direction:column;
+}
+#overlay.on{display:flex}
+#overlayHeader{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0;
+}
+#overlayHeader span{font-size:18px;font-weight:bold}
+#closeBtn{
+  font-size:15px;padding:7px 16px;border-radius:7px;
+  border:none;background:#5a1a1a;color:#fff;cursor:pointer;
+}
+#closeBtn:hover{background:#7a2a2a}
+#expandGrid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;padding:12px;overflow-y:auto;flex:1;align-content:start;
+}
+</style>
+</head><body>
+
+<div id="header">
+  <h1>✨ Golden Fiesta 2026 — Live Photos</h1>
+  <div id="controls">
+    <select id="countSel">
+      <option value="2">Show 2</option>
+      <option value="6" selected>Show 6</option>
+    </select>
+    <button id="expandBtn">⤢ Last 12</button>
+  </div>
+</div>
+
+<div id="grid" class="g6"></div>
+
+<div id="overlay">
+  <div id="overlayHeader">
+    <span>Last 12 Photos</span>
+    <button id="closeBtn">✕ Close</button>
+  </div>
+  <div id="expandGrid"></div>
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
+
+function fid(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
+function thumb(url,w){const id=fid(url);return id?`https://drive.google.com/thumbnail?id=${id}&sz=w${w}`:url;}
+function dl(url){const id=fid(url);return id?`https://drive.google.com/uc?export=download&id=${id}`:url;}
+function qrSrc(url,px){return `https://api.qrserver.com/v1/create-qr-code/?size=${px}x${px}&margin=2&data=${encodeURIComponent(dl(url))}`;}
+
+function makeCard(p,thumbW,qrPx){
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML=`
+    <img class="photo" src="${thumb(p.url,thumbW)}" alt="">
+    <div class="name">${p.name.replace(/\.jpg$/i,'')}</div>
+    <img class="qr" src="${qrSrc(p.url,qrPx)}" width="${qrPx}" height="${qrPx}" alt="QR">
+    <div class="label">📱 Scan to download</div>`;
+  return d;
+}
+
+const grid=document.getElementById('grid');
+const expGrid=document.getElementById('expandGrid');
+const overlay=document.getElementById('overlay');
+let data=[];
+
+function renderMain(){
+  const n=parseInt(document.getElementById('countSel').value);
+  grid.className=n===2?'g2':'g6';
+  grid.innerHTML='';
+  data.slice(-n).reverse().forEach(p=>grid.appendChild(makeCard(p,n===2?900:500,n===2?230:155)));
+}
+
+function renderExpand(){
+  expGrid.innerHTML='';
+  data.slice(-12).reverse().forEach(p=>expGrid.appendChild(makeCard(p,400,115)));
+}
+
+async function load(){
+  try{
+    data=await fetch(API_URL+'?action=list&t='+Date.now()).then(r=>r.json());
+    renderMain();
+    if(overlay.classList.contains('on'))renderExpand();
+  }catch(e){}
+}
+
+document.getElementById('countSel').onchange=renderMain;
+document.getElementById('expandBtn').onclick=()=>{renderExpand();overlay.classList.add('on');};
+document.getElementById('closeBtn').onclick=()=>overlay.classList.remove('on');
+
+load();
+setInterval(load,5000);
+</script>
+</body></html>
