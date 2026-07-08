@@ -6,27 +6,28 @@
 body{font-family:Arial;text-align:center;margin:12px;background:#111;color:#fff}
 h2{margin:0 0 10px}
 
-#cam-container{display:inline-block;max-width:95vw;width:100%}
+#cam-container{display:inline-block;max-width:95vw;overflow:hidden}
 
 #topbar{
   display:flex;align-items:center;justify-content:space-between;
-  background:#222;padding:10px 14px;border-radius:10px 10px 0 0;gap:10px
+  background:#222;padding:8px 10px;border-radius:10px 10px 0 0;gap:6px;
+  width:100%
 }
 #colour{
-  font-size:18px;padding:8px 10px;border-radius:6px;border:none;
-  font-weight:bold;cursor:pointer;min-width:110px
+  font-size:15px;padding:6px 8px;border-radius:6px;border:none;
+  font-weight:bold;cursor:pointer;flex:1;min-width:0
 }
-#counter-wrap{display:flex;align-items:center;gap:8px;flex:1;justify-content:center}
+#counter-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .cnt-btn{
-  font-size:32px;line-height:1;width:54px;height:54px;border-radius:50%;
+  font-size:26px;line-height:1;width:44px;height:44px;border-radius:50%;
   border:none;background:#444;color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;padding:0;margin:0
 }
 .cnt-btn:active{background:#666}
 #numDisplay{
-  font-size:52px;font-weight:bold;font-family:monospace;
-  background:#000;color:#0f0;padding:4px 12px;border-radius:8px;
-  min-width:100px;text-align:center;letter-spacing:4px
+  font-size:40px;font-weight:bold;font-family:monospace;
+  background:#000;color:#0f0;padding:4px 8px;border-radius:8px;
+  text-align:center;letter-spacing:2px;flex-shrink:0
 }
 
 #preview-wrap{position:relative}
@@ -78,7 +79,7 @@ canvas{display:none}
 <div id="recent"></div>
 
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbxenlbpR-3sAl4vvv-2NKCgZyLC61XS_FnNdE8WNxWlH4Eg8flLvjQ7QuANSQIct0xw/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbxdfvRg6oW-99FEMc_54BMC5_ToXldd8D4c9AG4yRzXn34U1UW7Oy0bXag-yNHJv1tD/exec";
 const FRAME="frame.png";
 const W=1800,H=1200;
 const v=document.getElementById('video');
