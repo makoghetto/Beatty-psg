@@ -15,7 +15,7 @@ img{width:200px}
 <h3>Already Printed</h3>
 <div id="printed"></div>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbxenlbpR-3sAl4vvv-2NKCgZyLC61XS_FnNdE8WNxWlH4Eg8flLvjQ7QuANSQIct0xw/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbydgYrlU9i2rD1J9aZtGrfifeFqZ1FsIevHWgFqs6HqqbUGM1H_HS-gYJtf0ocCY3ne/exec";
 
 function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
 function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
