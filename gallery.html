@@ -2,6 +2,7 @@
 <style>
 body{font-family:Arial}
 h2{margin:16px 0 8px}
+#filter{margin:10px 0;padding:5px}
 h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
 .card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
 .printed-card{border-color:#ddd;opacity:0.6}
@@ -10,6 +11,14 @@ img{width:200px}
 </style></head>
 <body>
 <h2>Print Queue</h2>
+<select id="filter">
+  <option value="ALL">Show All Colours</option>
+  <option value="RED">🔴 Red</option>
+  <option value="BLU">🔵 Blue</option>
+  <option value="YLW">🟡 Yellow</option>
+  <option value="GRN">🟢 Green</option>
+  <option value="WHT">⚪ White</option>
+</select>
 <p id="err"></p>
 <div id="queue"></div>
 <h3>Already Printed</h3>
@@ -42,16 +51,26 @@ async function load(){
     const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
     const queue=document.getElementById('queue');
     const printed=document.getElementById('printed');
+    const filter=document.getElementById('filter').value;
+    
     queue.innerHTML="";
     printed.innerHTML="";
+    
     d.forEach(p=>{
+      // Filter logic: Check if ALL is selected, or if the filename starts with the selected filter value
+      if(filter !== 'ALL' && !p.name.startsWith(filter)) return;
+      
       if(p.printed) printed.appendChild(makeCard(p,true));
       else queue.appendChild(makeCard(p,false));
     });
-    if(!queue.children.length) queue.innerHTML="<p style='color:#999'>No photos waiting to print.</p>";
+    
+    if(!queue.children.length) queue.innerHTML="<p style='color:#999'>No photos found for this filter.</p>";
   }catch(e){
     document.getElementById('err').textContent="Error loading gallery: "+e.message;
   }
 }
-load();setInterval(load,5000);
+
+document.getElementById('filter').onchange = load;
+load();
+setInterval(load,5000);
 </script></body></html>
