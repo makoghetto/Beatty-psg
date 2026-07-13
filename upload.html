@@ -69,9 +69,9 @@ canvas{display:none}
     <div id="numDisplay">001</div>
   </div>
   <div style="margin: 10px;">
-  <input type="checkbox" id="burnText" checked> 
-  <label for="burnText">Burn label onto photo</label>
-</div>
+    <input type="checkbox" id="burnText" checked> 
+    <label for="burnText">Burn label onto photo</label>
+  </div>
   <div id="preview-wrap">
     <video id="video" autoplay playsinline></video>
     <img id="overlay" src="frame.png" alt="">
@@ -105,22 +105,26 @@ navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{idea
   .then(s=>v.srcObject=s)
   .catch(err=>{document.getElementById('status').textContent="Camera error: "+err.message;});
 
-function drawPhoto(ctx){
+function drawPhoto(ctx, frameImg){
   const vw=v.videoWidth,vh=v.videoHeight;
   const vRatio=vw/vh,tRatio=W/H;
   let sx,sy,sw,sh;
   if(vRatio>tRatio){sw=vh*tRatio;sh=vh;sx=(vw-sw)/2;sy=0;}
   else{sw=vw;sh=vw/tRatio;sx=0;sy=(vh-sh)/2;}
   
+  // 1. Draw Camera
   ctx.filter="contrast(1.08) saturate(1.06) brightness(1.05)";
   ctx.drawImage(v,sx,sy,sw,sh,0,0,W,H);
   ctx.filter="none";
 
-  // Burn-in logic
+  // 2. Draw Frame
+  if(frameImg) ctx.drawImage(frameImg, 0, 0, W, H);
+
+  // 3. Draw Text (on top of frame)
   if(document.getElementById('burnText').checked) {
     const colour = document.getElementById('colour').value;
-    const num = parseInt(currentNum, 10).toString(); // Removes leading 0s
-    ctx.fillStyle = (colour === 'WHT') ? 'white' : 'red'; // Default to red unless white
+    const num = parseInt(currentNum, 10).toString();
+    ctx.fillStyle = (colour === 'WHT') ? '#000' : '#fff';
     ctx.font = 'bold 48px monospace';
     ctx.fillText(`${colour}-${num}`, 40, H - 40);
   }
@@ -160,10 +164,9 @@ function upload(imageData){
 document.getElementById('snap').onclick=()=>{
   if(!v.videoWidth){document.getElementById('status').textContent="Camera not ready";return;}
   const ctx=c.getContext('2d');
-  drawPhoto(ctx);
   const f=new Image();
-  f.onload=()=>{ctx.drawImage(f,0,0,W,H);upload(c.toDataURL('image/jpeg',0.92));};
-  f.onerror=()=>{upload(c.toDataURL('image/jpeg',0.92));};
+  f.onload=()=>{drawPhoto(ctx, f);upload(c.toDataURL('image/jpeg',0.92));};
+  f.onerror=()=>{drawPhoto(ctx, null);upload(c.toDataURL('image/jpeg',0.92));};
   f.src=FRAME;
 };
 
