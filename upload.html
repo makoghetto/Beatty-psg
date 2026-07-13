@@ -68,6 +68,10 @@ canvas{display:none}
     </div>
     <div id="numDisplay">001</div>
   </div>
+  <div style="margin: 10px;">
+  <input type="checkbox" id="burnText" checked> 
+  <label for="burnText">Burn label onto photo</label>
+</div>
   <div id="preview-wrap">
     <video id="video" autoplay playsinline></video>
     <img id="overlay" src="frame.png" alt="">
@@ -107,9 +111,19 @@ function drawPhoto(ctx){
   let sx,sy,sw,sh;
   if(vRatio>tRatio){sw=vh*tRatio;sh=vh;sx=(vw-sw)/2;sy=0;}
   else{sw=vw;sh=vw/tRatio;sx=0;sy=(vh-sh)/2;}
+  
   ctx.filter="contrast(1.08) saturate(1.06) brightness(1.05)";
   ctx.drawImage(v,sx,sy,sw,sh,0,0,W,H);
   ctx.filter="none";
+
+  // Burn-in logic
+  if(document.getElementById('burnText').checked) {
+    const colour = document.getElementById('colour').value;
+    const num = parseInt(currentNum, 10).toString(); // Removes leading 0s
+    ctx.fillStyle = (colour === 'WHT') ? 'white' : 'red'; // Default to red unless white
+    ctx.font = 'bold 48px monospace';
+    ctx.fillText(`${colour}-${num}`, 40, H - 40);
+  }
 }
 
 function thumbUrl(url){
