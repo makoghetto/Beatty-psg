@@ -2,7 +2,7 @@
 <style>
 body{font-family:Arial}
 h2{margin:16px 0 8px}
-#filter{margin:10px 0;padding:5px}
+#filter{margin:10px 0;padding:5px;height:120px}
 h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
 .card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
 .printed-card{border-color:#ddd;opacity:0.6}
@@ -11,13 +11,13 @@ img{width:200px}
 </style></head>
 <body>
 <h2>Print Queue</h2>
-<select id="filter">
-  <option value="ALL">Show All Colours</option>
-  <option value="RED">🔴 Red</option>
-  <option value="BLU">🔵 Blue</option>
-  <option value="YLW">🟡 Yellow</option>
-  <option value="GRN">🟢 Green</option>
-  <option value="WHT">⚪ White</option>
+<p style="font-size:12px; color:#666;">Hold <b>Ctrl</b> (or <b>Cmd</b>) to select multiple colours.</p>
+<select id="filter" multiple>
+  <option value="RED" selected>🔴 Red</option>
+  <option value="BLU" selected>🔵 Blue</option>
+  <option value="YLW" selected>🟡 Yellow</option>
+  <option value="GRN" selected>🟢 Green</option>
+  <option value="WHT" selected>⚪ White</option>
 </select>
 <p id="err"></p>
 <div id="queue"></div>
@@ -51,20 +51,24 @@ async function load(){
     const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
     const queue=document.getElementById('queue');
     const printed=document.getElementById('printed');
-    const filter=document.getElementById('filter').value;
+    
+    // Get array of selected values
+    const selectedOptions = Array.from(document.getElementById('filter').selectedOptions).map(o => o.value);
     
     queue.innerHTML="";
     printed.innerHTML="";
     
     d.forEach(p=>{
-      // Filter logic: Check if ALL is selected, or if the filename starts with the selected filter value
-      if(filter !== 'ALL' && !p.name.startsWith(filter)) return;
+      // Filter logic: Check if the photo's name starts with any of the selected values
+      const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
+      if(!isMatch) return;
       
       if(p.printed) printed.appendChild(makeCard(p,true));
       else queue.appendChild(makeCard(p,false));
     });
     
-    if(!queue.children.length) queue.innerHTML="<p style='color:#999'>No photos found for this filter.</p>";
+    if(!queue.children.length && !printed.children.length) 
+        queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
   }catch(e){
     document.getElementById('err').textContent="Error loading gallery: "+e.message;
   }
