@@ -180,11 +180,10 @@ function loadRecent(){
     d.slice(-9).reverse().forEach(p=>{
       const img=document.createElement('img');
       img.src=p.url.replace("uc?id=","thumbnail?id=")+"&sz=w400";
-      img.onclick = () => {
-        // Extract the file ID correctly and use the view export format
-        const fileId = p.url.split('id=')[1]; 
-        document.getElementById('modal-img').src = `https://drive.google.com/uc?export=view&id=${fileId}`;
-        document.getElementById('modal').style.display = 'block';
+      img.onclick=()=>{
+        // FIX: Use a high-quality thumbnail link (sz=w1200) instead of uc?export=view
+        document.getElementById('modal-img').src=p.url.replace("uc?id=","thumbnail?id=")+"&sz=w1200";
+        document.getElementById('modal').style.display='block';
       };
       el.appendChild(img);
     });
