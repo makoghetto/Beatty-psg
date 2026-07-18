@@ -125,7 +125,7 @@ function drawPhoto(ctx, frameImg){
 
   if(document.getElementById('burnText').checked) {
     const colourKey = document.getElementById('colour').value;
-    const num = parseInt(currentNum, 10).toString();
+    const num = String(currentNum).padStart(2, '0');
     ctx.fillStyle = COLOUR_MAP[colourKey] || '#FFFFFF';
     ctx.font = 'bold 64px monospace';
     ctx.fillText(`${colourKey}-${num}`, 40, H - 40);
