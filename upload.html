@@ -5,38 +5,94 @@
 *{box-sizing:border-box}
 body{font-family:Arial;text-align:center;margin:12px;background:#111;color:#fff}
 h2{margin:0 0 10px}
+
 #cam-container{display:inline-block;max-width:95vw;overflow:hidden}
-#topbar{display:flex;align-items:center;justify-content:space-between;background:#222;padding:8px 10px;border-radius:10px 10px 0 0;gap:6px;width:100%}
-#colour{font-size:15px;padding:6px 8px;border-radius:6px;border:none;font-weight:bold;cursor:pointer;flex:1;min-width:0}
+
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#222;padding:8px 10px;border-radius:10px 10px 0 0;gap:6px;
+  width:100%
+}
+#colour{
+  font-size:15px;padding:6px 8px;border-radius:6px;border:none;
+  font-weight:bold;cursor:pointer;flex:1;min-width:0
+}
 #counter-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.cnt-btn{font-size:26px;line-height:1;width:44px;height:44px;border-radius:50%;border:none;background:#444;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0}
-#numDisplay{font-size:40px;font-weight:bold;font-family:monospace;background:#000;color:#0f0;padding:4px 8px;border-radius:8px;text-align:center;letter-spacing:2px;flex-shrink:0}
-#preview-wrap{position:relative}
-video{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
-#snap, #upload-btn{display:block;width:100%;max-width:95vw;margin:10px auto;padding:20px 0;font-size:24px;font-weight:bold;border:none;border-radius:10px;cursor:pointer}
+.cnt-btn{
+  font-size:26px;line-height:1;width:44px;height:44px;border-radius:50%;
+  border:none;background:#444;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;margin:0
+}
+.cnt-btn:active{background:#666}
+#numDisplay{
+  font-size:40px;font-weight:bold;font-family:monospace;
+  background:#000;color:#0f0;padding:4px 8px;border-radius:8px;
+  text-align:center;letter-spacing:2px;flex-shrink:0
+}
+
+#preview-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  line-height: 0;
+}
+#video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1800 / 1200;
+  object-fit: cover;
+  display: block;
+}
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  object-fit: cover;
+}
+
+#snap, #upload-btn{
+  display:block;width:100%;max-width:95vw;margin:10px auto;
+  padding:20px 0;font-size:24px;font-weight:bold;border:none;border-radius:10px;
+  cursor:pointer;touch-action:manipulation
+}
 #snap{background:#c0392b;color:#fff}
 #upload-btn{background:#27ae60;color:#fff}
 #file-input{display:none}
+
 #status{margin:6px 0;font-size:16px;color:#aaa;min-height:22px}
-#recent{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;max-width:95vw;margin-left:auto;margin-right:auto}
+
+#recent{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+  margin-top:10px;max-width:95vw;margin-left:auto;margin-right:auto
+}
 #recent img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px;border:2px solid #444;cursor:pointer}
 
-/* Modal Styles */
 #modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;padding:20px}
 #modal img{max-width:100%;max-height:80vh;margin:50px auto;display:block}
 #close-btn{position:absolute;top:20px;right:20px;font-size:40px;color:#fff;cursor:pointer}
+canvas{display:none}
 </style>
 </head><body>
 <h2>Golden Fiesta 2026</h2>
 <div id="cam-container">
   <div id="topbar">
     <select id="colour">
-      <option value="RED">🔴 Red</option><option value="BLU">🔵 Blue</option><option value="YLW">🟡 Yellow</option><option value="GRN">🟢 Green</option><option value="WHT">⚪ White</option>
+      <option value="RED">🔴 Red</option><option value="BLU">🔵 Blue</option>
+      <option value="YLW">🟡 Yellow</option><option value="GRN">🟢 Green</option>
+      <option value="WHT">⚪ White</option>
     </select>
-    <div id="counter-wrap"><button class="cnt-btn" id="dec">−</button><button class="cnt-btn" id="inc">+</button></div>
+    <div id="counter-wrap">
+      <button class="cnt-btn" id="dec">−</button><button class="cnt-btn" id="inc">+</button>
+    </div>
     <div id="numDisplay">01</div>
   </div>
-  <div style="margin: 10px;"><input type="checkbox" id="burnText" checked> <label for="burnText">Burn label</label></div>
+  <div style="margin: 10px; color: #fff; font-size: 14px;">
+    <input type="checkbox" id="burnText" checked> <label for="burnText">Burn label onto photo</label>
+  </div>
   <div id="preview-wrap">
     <video id="video" autoplay playsinline></video>
     <img id="overlay" src="frame.png" alt="">
@@ -59,28 +115,78 @@ const W=1800,H=1200;
 const v=document.getElementById('video'), c=document.getElementById('canvas');
 c.width=W;c.height=H;
 
-// ... (Keep existing COLOUR_MAP, setNum, navigator, drawPhoto, upload, loadRecent logic)
+const COLOUR_MAP = {'RED': '#FF0000', 'BLU': '#0000FF', 'YLW': '#E6D000', 'GRN': '#008000', 'WHT': '#FFFFFF'};
 
-// Thumbnail click handler
-function openModal(url){
-  document.getElementById('modal-img').src = url;
-  document.getElementById('modal').style.display = 'block';
+let currentNum=parseInt(localStorage.getItem('photoNum')||'1');
+function setNum(n){
+  if(n>50)n=1; else if(n<1)n=50;
+  currentNum=n;
+  localStorage.setItem('photoNum',n);
+  document.getElementById('numDisplay').textContent=String(n).padStart(2,'0');
 }
-document.getElementById('close-btn').onclick = () => document.getElementById('modal').style.display = 'none';
+setNum(currentNum);
+document.getElementById('dec').onclick=()=>setNum(currentNum-1);
+document.getElementById('inc').onclick=()=>setNum(currentNum+1);
 
-// Update loadRecent to bind clicks
+navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>v.srcObject=s).catch(e=>{});
+
+function drawPhoto(ctx, imgSource, isFile){
+  ctx.clearRect(0,0,W,H);
+  if(isFile) ctx.drawImage(imgSource, 0, 0, W, H);
+  else ctx.drawImage(v, 0, 0, v.videoWidth, v.videoHeight, 0, 0, W, H);
+  
+  const f=new Image();
+  f.src=FRAME;
+  f.onload=()=>{
+    ctx.drawImage(f, 0, 0, W, H);
+    if(document.getElementById('burnText').checked){
+      const colourKey=document.getElementById('colour').value;
+      const num=String(currentNum).padStart(2,'0');
+      ctx.fillStyle=COLOUR_MAP[colourKey]||'#FFFFFF';
+      ctx.font='bold 64px monospace';
+      ctx.fillText(`${colourKey}-${num}`, 40, H-40);
+    }
+    upload(c.toDataURL('image/jpeg', 0.9));
+  };
+}
+
+document.getElementById('file-input').onchange = (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => drawPhoto(c.getContext('2d'), img, true);
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+function upload(imageData){
+  const colour=document.getElementById('colour').value;
+  const num=String(currentNum).padStart(2,'0');
+  fetch(API_URL,{method:"POST",mode:"no-cors",body:JSON.stringify({image:imageData,colour:colour,num:num})});
+  document.getElementById('status').textContent="Sent! ["+colour+"-"+num+"]";
+  setNum(currentNum+1);
+  setTimeout(loadRecent, 4000);
+}
+
+document.getElementById('snap').onclick=()=>drawPhoto(c.getContext('2d'), null, false);
+document.getElementById('close-btn').onclick=()=>document.getElementById('modal').style.display='none';
+
 function loadRecent(){
   fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json()).then(d=>{
     const el=document.getElementById('recent');
     el.innerHTML="";
     d.slice(-9).reverse().forEach(p=>{
       const img=document.createElement('img');
-      const thumb = p.url.replace("uc?id=","thumbnail?id=")+"&sz=w400";
-      img.src = thumb;
-      img.onclick = () => openModal(p.url.replace("uc?id=","uc?export=view&id="));
+      img.src=p.url.replace("uc?id=","thumbnail?id=")+"&sz=w400";
+      img.onclick=()=>{
+        document.getElementById('modal-img').src=p.url.replace("uc?id=","uc?export=view&id=");
+        document.getElementById('modal').style.display='block';
+      };
       el.appendChild(img);
     });
   });
 }
-// ... (rest of script initialization)
+loadRecent();
 </script></body></html>
