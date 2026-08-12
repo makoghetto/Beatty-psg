@@ -8,7 +8,7 @@ h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
 .card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
 .printed-card{border-color:#ddd;opacity:0.6}
 img{width:200px}
-#err{color:red;margin:8px}
+#err{color:red;margin:8px;font-weight:bold}
 .top-right-controls{
   position:absolute;top:16px;right:16px;
   background:#fff;border:1px solid #ccc;padding:8px 12px;
@@ -69,7 +69,27 @@ function makeCard(p,isPrinted){
 
 async function load(){
   try{
-    const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
+    // ==========================================
+    // 🔍 DEBUGGING BLOCK (Currently Active)
+    // Checks if Google returns HTML/Login page instead of JSON
+    // ==========================================
+    const res = await fetch(API_URL+"?action=list&t="+Date.now());
+    const rawText = await res.text();
+    
+    if(rawText.trim().startsWith('<')) {
+      console.error("HTML Received from Google:", rawText);
+      throw new Error("Google returned an HTML page instead of JSON. Check your Apps Script deployment permissions ('Who has access' must be 'Anyone').");
+    }
+    const d = JSON.parse(rawText);
+
+    // ==========================================
+    // 🟢 WORKING CODE (Commented out)
+    // Uncomment this block once debugging is complete
+    // ==========================================
+    /*
+    const d = await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
+    */
+
     const queue=document.getElementById('queue');
     const printed=document.getElementById('printed');
     const printedHeader=document.getElementById('printed-header');
@@ -81,7 +101,6 @@ async function load(){
     queue.innerHTML="";
     printed.innerHTML="";
     
-    // Hide/Show Printed section header based on toggle
     printedHeader.style.display = showPrinted ? 'block' : 'none';
     printed.style.display = showPrinted ? 'block' : 'none';
     
@@ -89,7 +108,6 @@ async function load(){
       const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
       if(!isMatch) return;
       
-      // Filter overwritten files by filename length (Standard active filenames are 10 chars like RED-01.jpg)
       const isOverwritten = p.name.length > 10;
       if(!showOverwritten && isOverwritten) return;
       
