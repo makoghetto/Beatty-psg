@@ -28,11 +28,9 @@ Photographer A is issued a set of Red tickets - Numbered 1 to 50. On the camera 
 
 Photographer A changes their counter to the number on the next ticket (eg. red ticket 7)
 
-Photographer A takes the photo and it is then saved as Red-007 on the gallery image.
+Photographer A takes the photo and it is then saved as Red-07 on the gallery image.
 
-Printer-person X views the gallery page, downloads the latest photo (eg Red-007) and prints it, attaching a piece of masking tape to the back of the photo.
-
-Printer-person X then uses the coloured marker (in this case Red colour), and writes 7 on the masking tape at the back of the photo.
+Printer-person X views the gallery page, downloads the latest photo (eg Red-07) and prints it, (if number not burnt into image, attach a piece of masking tape to the back of the photo. Printer-person X then uses the coloured marker (in this case Red colour), and writes 7 on the masking tape at the back of the photo.)
 
 Printed photos are then sorted by colour and by number, for pick up.
 
