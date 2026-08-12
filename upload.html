@@ -165,7 +165,8 @@ function drawPhoto(ctx, imgSource, isFile){
       ctx.font='bold 64px monospace';
       ctx.fillText(`${colourKey}-${num}`, 40, H-40);
     }
-    uploadPhoto(c.toDataURL('image/jpeg', 0.7));
+    const quality = (typeof PHOTO_QUALITY !== 'undefined') ? PHOTO_QUALITY : 0.6;
+    uploadPhoto(c.toDataURL('image/jpeg', quality));
   };
 }
 
