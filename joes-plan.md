@@ -24,7 +24,7 @@ Photographers will be constrained by how many sets of coloured markers and ticke
 Process Instructions:
 Every photographer has one colour that corresponds with a marker colour and a ticket colour. Eg. 2 photographers means 1 red ticket and red marker, one blue ticket and one blue marker.
 
-Photographer A is issued a set of Red tickets - Numbered 1 to 100. On the camera page, Photographer A sets their colour e.g. Red.)
+Photographer A is issued a set of Red tickets - Numbered 1 to 50. On the camera page, Photographer A sets their colour e.g. Red.)
 
 Photographer A changes their counter to the number on the next ticket (eg. red ticket 7)
 
