@@ -35,3 +35,11 @@ Printer-person X views the gallery page, downloads the latest photo (eg Red-07) 
 Printed photos are then sorted by colour and by number, for pick up.
 
 Elderly person submits their Red 7 ticket to the counter to collect their photo.
+
+### Extra Prize
+
+For teachers day, same photo taking functionality, but also with a display screen for teachers to scan a QR code and download their photos directly.
+
+Display https://makoghetto.github.io/Beatty-psg/display.html
+ - For viewing and downloading
+
