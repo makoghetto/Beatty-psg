@@ -1,95 +1,86 @@
-<!DOCTYPE html>
-<html><head>
-<meta charset="utf-8">
-<title>Golden Fiesta — Live Display</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Gallery</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📸</text></svg>">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#111;color:#fff;font-family:Arial,sans-serif;height:100vh;overflow:hidden}
+body{font-family:Arial}
+h2{margin:16px 0 8px}
+#filter{margin:10px 0;padding:5px;height:120px}
+h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
+.card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
+.printed-card{border-color:#ddd;opacity:0.6}
+img{width:200px}
+#err{color:red;margin:8px}
+</style></head>
+<body>
+<h2>Print Queue</h2>
+<p style="font-size:12px; color:#666;">Hold <b>Ctrl</b> (or <b>Cmd</b>) to select multiple colours.</p>
+<select id="filter" multiple>
+  <option value="RED" selected>🔴 Red</option>
+  <option value="BLU" selected>🔵 Blue</option>
+  <option value="YLW" selected>🟡 Yellow</option>
+  <option value="GRN" selected>🟢 Green</option>
+  <option value="WHT" selected>⚪ White</option>
+</select>
+<p id="err"></p>
+<div id="queue"></div>
+<h3>Already Printed</h3>
+<div id="printed"></div>
 
-#header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#1a1a1a;border-bottom:1px solid #333;}
-#header h1{font-size:20px;letter-spacing:1px}
-
-#grid{display:grid;gap:20px;padding:20px;height:calc(100vh - 53px);align-content:start;overflow-y:auto;}
-.g2{grid-template-columns:repeat(auto-fit, minmax(400px, 1fr))}
-.g6{grid-template-columns:repeat(auto-fit, minmax(300px, 1fr))}
-
-.card{
-  background:#111;border-radius:10px;overflow:hidden;
-  position:relative; /* Required for absolute QR positioning */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-.card .photo{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:8px}
-
-/* Overlaying QR Code */
-.card .qr{
-  position:absolute;bottom:15px;left:15px;
-  background:#fff;padding:4px;border-radius:6px;
-  border:2px solid #000;z-index:10;
-}
-
-#overlay{display:none;position:fixed;inset:0;background:#0d0d0d;z-index:200;flex-direction:column}
-#overlay.on{display:flex}
-#overlayHeader{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#1a1a1a;border-bottom:1px solid #333}
-#expandGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px;overflow-y:auto}
-</style>
-</head><body>
-
-<div id="header">
-  <h1>✨ Golden Fiesta 2026</h1>
-  <button id="expandBtn" onclick="renderExpand();overlay.classList.add('on')">⤢ View Last 12</button>
-</div>
-
-<div id="grid" class="g6"></div>
-
-<div id="overlay">
-  <div id="overlayHeader"><span>Last 12 Photos</span><button id="closeBtn" onclick="overlay.classList.remove('on')">✕ Close</button></div>
-  <div id="expandGrid"></div>
-</div>
-
+<script src="config.js"></script>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbx-eBemtJhNZJ3kNfG72LjHhFj-cx4VUjyUAC095lEeihntPJzgHwzEFv572X0q14Be/exec";
+function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
+function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
+function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
 
-function fid(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
-function thumb(url,w){const id=fid(url);return id?`https://drive.google.com/thumbnail?id=${id}&sz=w${w}`:url;}
-function dl(url){const id=fid(url);return id?`https://drive.google.com/uc?export=download&id=${id}`:url;}
-function qrSrc(url,px){return `https://api.qrserver.com/v1/create-qr-code/?size=${px}x${px}&margin=0&data=${encodeURIComponent(dl(url))}`;}
-
-function makeCard(p,thumbW,qrPx){
-  const d=document.createElement('div');d.className='card';
-  d.innerHTML=`
-    <img class="photo" src="${thumb(p.url,thumbW)}" alt="">
-    <img class="qr" src="${qrSrc(p.url,qrPx)}" width="${qrPx}" height="${qrPx}" alt="QR">`;
-  return d;
-}
-
-const grid=document.getElementById('grid');
-const expGrid=document.getElementById('expandGrid');
-const overlay=document.getElementById('overlay');
-let data=[];
-
-function renderMain(){
-  const n=parseInt(document.getElementById('countSel')?.value || 6);
-  grid.className=n===2?'g2':'g6';
-  grid.innerHTML='';
-  data.slice(-n).reverse().forEach(p=>grid.appendChild(makeCard(p,800,120)));
-}
-
-function renderExpand(){
-  expGrid.innerHTML='';
-  data.slice(-12).reverse().forEach(p=>expGrid.appendChild(makeCard(p,600,100)));
+function makeCard(p,isPrinted){
+  const div=document.createElement('div');
+  div.className='card'+(isPrinted?' printed-card':'');
+  div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
+  <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
+  <button>${isPrinted ? 'Undo' : 'Mark Printed'}</button>`;
+  
+  const btn = div.querySelector('button');
+  btn.onclick = async () => {
+    btn.disabled = true;
+    const actionName = isPrinted ? 'unprinted' : 'printed';
+    await fetch(API_URL,{
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"text/plain"},
+      body: JSON.stringify({action: actionName, id: p.id})
+    });
+    setTimeout(load, 1500);
+  };
+  
+  return div;
 }
 
 async function load(){
   try{
-    data=await fetch(API_URL+'?action=list&t='+Date.now()).then(r=>r.json());
-    renderMain();
-    if(overlay.classList.contains('on')) renderExpand();
-  }catch(e){}
+    const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
+    const queue=document.getElementById('queue');
+    const printed=document.getElementById('printed');
+    
+    const selectedOptions = Array.from(document.getElementById('filter').selectedOptions).map(o => o.value);
+    
+    queue.innerHTML="";
+    printed.innerHTML="";
+    
+    d.forEach(p=>{
+      const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
+      if(!isMatch) return;
+      
+      if(p.printed) printed.appendChild(makeCard(p,true));
+      else queue.appendChild(makeCard(p,false));
+    });
+    
+    if(!queue.children.length && !printed.children.length) 
+        queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
+  }catch(e){
+    document.getElementById('err').textContent="Error loading gallery: "+e.message;
+  }
 }
 
+document.getElementById('filter').onchange = load;
 load();
-setInterval(load, 5000);
-</script>
-</body></html>
+setInterval(load,5000);
+</script></body></html>
