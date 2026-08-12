@@ -24,7 +24,7 @@ img{width:200px}
 <h3>Already Printed</h3>
 <div id="printed"></div>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbwCHqPYa_mQLgFmSkRsU6xN2Wdg_7C7In1xpssehdM6g0yQwyFrE97pUaCKjqYGAVrq/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbxAz4XZfvW3DB6auoGAbVtQawNHKR-XJ4Pue3AOarhmTrPiVxHxV-E34-tW2L3XKrs/exec";
 
 function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
 function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
@@ -35,14 +35,21 @@ function makeCard(p,isPrinted){
   div.className='card'+(isPrinted?' printed-card':'');
   div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
   <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
-  <button ${isPrinted?'disabled':''}>Mark Printed</button>`;
-  if(!isPrinted){
-    div.querySelector('button').onclick=async()=>{
-      div.querySelector('button').disabled=true;
-      await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action:"printed",id:p.id})});
-      setTimeout(load,1500);
-    };
-  }
+  <button>${isPrinted ? 'Undo' : 'Mark Printed'}</button>`;
+  
+  const btn = div.querySelector('button');
+  btn.onclick = async () => {
+    btn.disabled = true;
+    const actionName = isPrinted ? 'unprinted' : 'printed';
+    await fetch(API_URL,{
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"text/plain"},
+      body: JSON.stringify({action: actionName, id: p.id})
+    });
+    setTimeout(load, 1500);
+  };
+  
   return div;
 }
 
