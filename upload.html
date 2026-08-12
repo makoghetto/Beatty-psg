@@ -114,8 +114,8 @@ canvas{display:none}
   <button id="delete-btn">Delete Photo</button>
 </div>
 
+<script src="config.js"></script>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbx-eBemtJhNZJ3kNfG72LjHhFj-cx4VUjyUAC095lEeihntPJzgHwzEFv572X0q14Be/exec";
 const FRAME="frame.png";
 const W=1800,H=1200;
 const v=document.getElementById('video'), c=document.getElementById('canvas');
@@ -189,7 +189,6 @@ async function uploadWithConflictCheck(imageData){
     const d = await res.json();
     const existingNames = new Set(d.map(p => p.name));
     
-    // Search up to 50 slots for an available unused number starting from currentNum
     let num = currentNum;
     for(let i=0; i<50; i++){
       const formatted = String(num).padStart(2,'0');
@@ -202,9 +201,7 @@ async function uploadWithConflictCheck(imageData){
       num++;
       if(num > 50) num = 1;
     }
-  } catch(e) {
-    // Fallback if offline
-  }
+  } catch(e) {}
 
   const num=String(currentNum).padStart(2,'0');
   document.getElementById('status').textContent=`Sending [${colour}-${num}]...`;
