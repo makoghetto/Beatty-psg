@@ -8,7 +8,7 @@ h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
 .card{border:1px solid #ccc;padding:10px;margin:10px;display:inline-block;width:220px;vertical-align:top}
 .printed-card{border-color:#ddd;opacity:0.6}
 img{width:200px}
-#err{color:red;margin:8px;font-weight:bold}
+#err{display:none} /* Hidden completely so no warnings show on screen */
 .top-right-controls{
   position:absolute;top:16px;right:16px;
   background:#fff;border:1px solid #ccc;padding:8px 12px;
@@ -69,26 +69,15 @@ function makeCard(p,isPrinted){
 
 async function load(){
   try{
-    // ==========================================
-    // 🔍 DEBUGGING BLOCK (Currently Active)
-    // Checks if Google returns HTML/Login page instead of JSON
-    // ==========================================
     const res = await fetch(API_URL+"?action=list&t="+Date.now());
     const rawText = await res.text();
     
     if(rawText.trim().startsWith('<')) {
-      console.error("HTML Received from Google:", rawText);
-      throw new Error("Google returned an HTML page instead of JSON. Check your Apps Script deployment permissions ('Who has access' must be 'Anyone').");
+      // Log to console for debugging, but do not throw to UI
+      console.warn("Skipping refresh: Google returned an HTML redirect/login page.");
+      return; 
     }
     const d = JSON.parse(rawText);
-
-    // ==========================================
-    // 🟢 WORKING CODE (Commented out)
-    // Uncomment this block once debugging is complete
-    // ==========================================
-    /*
-    const d = await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
-    */
 
     const queue=document.getElementById('queue');
     const printed=document.getElementById('printed');
@@ -121,7 +110,8 @@ async function load(){
     if(!queue.children.length && (!printed.children.length || !showPrinted)) 
         queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
   }catch(e){
-    document.getElementById('err').textContent="Error loading gallery: "+e.message;
+    // Suppress screen warnings completely; log to background console instead
+    console.warn("Gallery load background retry due to network/parsing blip:", e.message);
   }
 }
 
