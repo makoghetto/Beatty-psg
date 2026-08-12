@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><title>Gallery</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📸</text></svg>">
 <style>
-body{font-family:Arial}
+body{font-family:Arial;position:relative;margin:16px}
 h2{margin:16px 0 8px}
 #filter{margin:10px 0;padding:5px;height:120px}
 h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
@@ -9,8 +9,21 @@ h3{margin:20px 0 8px;color:#555;border-top:1px solid #ddd;padding-top:16px}
 .printed-card{border-color:#ddd;opacity:0.6}
 img{width:200px}
 #err{color:red;margin:8px}
+.top-right-controls{
+  position:absolute;top:16px;right:16px;
+  background:#fff;border:1px solid #ccc;padding:8px 12px;
+  border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1);font-size:13px;z-index:100
+}
+.top-right-controls label{display:block;margin-bottom:4px;cursor:pointer}
+.top-right-controls label:last-child{margin-bottom:0}
 </style></head>
 <body>
+
+<div class="top-right-controls">
+  <label><input type="checkbox" id="showPrinted" checked> Show Already Printed</label>
+  <label><input type="checkbox" id="showOverwritten" checked> Show Overwritten Numbers</label>
+</div>
+
 <h2>Print Queue</h2>
 <p style="font-size:12px; color:#666;">Hold <b>Ctrl</b> (or <b>Cmd</b>) to select multiple colours.</p>
 <select id="filter" multiple>
@@ -22,11 +35,11 @@ img{width:200px}
 </select>
 <p id="err"></p>
 <div id="queue"></div>
-<h3>Already Printed</h3>
+<h3 id="printed-header">Already Printed</h3>
 <div id="printed"></div>
-<script>
-const API_URL="https://script.google.com/macros/s/AKfycbx-eBemtJhNZJ3kNfG72LjHhFj-cx4VUjyUAC095lEeihntPJzgHwzEFv572X0q14Be/exec";
 
+<script src="config.js"></script>
+<script>
 function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
 function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
 function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
@@ -59,23 +72,35 @@ async function load(){
     const d=await fetch(API_URL+"?action=list&t="+Date.now()).then(r=>r.json());
     const queue=document.getElementById('queue');
     const printed=document.getElementById('printed');
+    const printedHeader=document.getElementById('printed-header');
     
-    // Get array of selected values
     const selectedOptions = Array.from(document.getElementById('filter').selectedOptions).map(o => o.value);
+    const showPrinted = document.getElementById('showPrinted').checked;
+    const showOverwritten = document.getElementById('showOverwritten').checked;
     
     queue.innerHTML="";
     printed.innerHTML="";
     
+    // Hide/Show Printed section header based on toggle
+    printedHeader.style.display = showPrinted ? 'block' : 'none';
+    printed.style.display = showPrinted ? 'block' : 'none';
+    
     d.forEach(p=>{
-      // Filter logic: Check if the photo's name starts with any of the selected values
       const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
       if(!isMatch) return;
       
-      if(p.printed) printed.appendChild(makeCard(p,true));
-      else queue.appendChild(makeCard(p,false));
+      // Filter overwritten files by filename length (Standard active filenames are 10 chars like RED-01.jpg)
+      const isOverwritten = p.name.length > 10;
+      if(!showOverwritten && isOverwritten) return;
+      
+      if(p.printed){
+        if(showPrinted) printed.appendChild(makeCard(p,true));
+      } else {
+        queue.appendChild(makeCard(p,false));
+      }
     });
     
-    if(!queue.children.length && !printed.children.length) 
+    if(!queue.children.length && (!printed.children.length || !showPrinted)) 
         queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
   }catch(e){
     document.getElementById('err').textContent="Error loading gallery: "+e.message;
@@ -83,6 +108,9 @@ async function load(){
 }
 
 document.getElementById('filter').onchange = load;
+document.getElementById('showPrinted').onchange = load;
+document.getElementById('showOverwritten').onchange = load;
+
 load();
 setInterval(load,5000);
 </script></body></html>
