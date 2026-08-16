@@ -16,7 +16,7 @@ body{margin:0;font-family:Arial;background:#F5EBDD;display:flex;justify-content:
 <div class="vote"><button onclick="vote('up')">👍</button><button onclick="vote('down')">👎</button></div><div class="thanks" id="thanks">Thank you for your feedback! 💛</div>
 <div class="stats"><div class="stat"><div class="num" id="scans">—</div><div class="lbl">Gifts Unwrapped</div></div><div class="stat"><div class="num" id="devices">—</div><div class="lbl">Unique Devices</div></div></div></div></div>
 <script>
-const APPS_SCRIPT_URL="PASTE_YOUR_WEBAPP_URL";
+const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycby49XCFF5hBd1YTYZpxDbTxNtxiNEtJsYBLL4PIlHNkU2ErdY4FVxFEm7vf8VEDOfiFMw/exec";
 const GIFTS=[["🌱","Every lesson plants a seed.","Thank you for helping young minds grow."],["☕","Staff Room Prophecy","The moment you finally sit down with kopi… someone says, 'Cher, got one minute?'"],["🍀","Jiayou, lah!","May your kopi stay hot and your Wi-Fi never disconnect."],["🐝","Beatty Teacher Bingo","How many of these happened this week?"]];
 let deviceId=localStorage.getItem("beatty_device");if(!deviceId){deviceId=crypto.randomUUID();localStorage.setItem("beatty_device",deviceId);}
 async function api(action,vote=""){if(APPS_SCRIPT_URL.includes("PASTE"))return;const r=await fetch(APPS_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({action,deviceId,vote})});const d=await r.json();scans.textContent=d.totalScans;devices.textContent=d.uniqueDevices;}
