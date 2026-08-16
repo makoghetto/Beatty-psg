@@ -2,220 +2,240 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Beatty Teachers' Day Lucky Treat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beatty Teachers' Day Gift</title>
 <style>
 :root{
-  --primary:#B22222;
-  --secondary:#FFD54F;
-  --bg1:#fff8ef;
-  --bg2:#fff0f5;
-  --text:#333;
+  --maroon:#8C1D40;
+  --gold:#D4AF37;
+  --cream:#FBF8F2;
+  --text:#473737;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  color:var(--text);
-  min-height:100vh;
+  background:radial-gradient(circle at top,#FFFDF9,#F3E7D8 70%,#EAD7C4);
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
+  min-height:100vh;
   padding:20px;
 }
 .card{
-  width:min(92vw,460px);
-  background:#fff;
-  border-radius:24px;
-  padding:28px;
-  text-align:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.12);
-  position:relative;
+  width:100%;
+  max-width:430px;
+  background:rgba(255,255,255,.94);
+  border-radius:28px;
+  box-shadow:0 18px 45px rgba(0,0,0,.12);
   overflow:hidden;
 }
+.header{padding:26px;text-align:center}
 .badge{
   display:inline-block;
-  background:#fff4d6;
-  color:#9a6700;
-  padding:6px 12px;
+  background:#F8EDC8;
+  color:#8B6A00;
+  padding:7px 14px;
   border-radius:999px;
-  font-size:13px;
-  font-weight:bold;
-}
-h1{margin:14px 0 4px;font-size:28px}
-.school{color:var(--primary);font-weight:bold}
-.category{
-  display:inline-block;
-  margin-top:12px;
-  padding:6px 14px;
-  border-radius:999px;
-  background:#f2f2f2;
-  font-size:12px;
+  font-size:11px;
   font-weight:bold;
   letter-spacing:.08em;
 }
-.emoji{font-size:54px;margin:18px 0 10px}
-.message{font-size:22px;font-weight:bold;line-height:1.35;margin:8px 0 14px}
-.sub{font-size:16px;line-height:1.6;color:#555;min-height:70px}
-button{
-  margin-top:18px;
-  border:none;
-  background:var(--primary);
-  color:#fff;
-  padding:13px 18px;
-  border-radius:14px;
-  font-size:16px;
-  cursor:pointer;
+.school{margin-top:10px;color:var(--maroon);font-weight:bold}
+.section{padding:0 24px 28px;text-align:center}
+.gift{
+  width:130px;height:130px;margin:18px auto;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--maroon),#C73E5B);
+  position:relative;cursor:pointer;
+  box-shadow:0 12px 24px rgba(140,29,64,.3);
+  transition:.25s;
 }
-button:hover{opacity:.92}
-.footer{margin-top:16px;font-size:12px;color:#888}
-.confetti{
-  position:absolute;
-  width:8px;height:14px;
-  top:-20px;
-  opacity:.85;
-  animation:fall 3s linear forwards;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(720deg);opacity:0}
-}
+.gift:hover{transform:scale(1.05)}
+.v{position:absolute;width:18px;height:100%;background:var(--gold);left:calc(50% - 9px)}
+.h{position:absolute;height:18px;width:100%;background:var(--gold);top:calc(50% - 9px)}
+.category{font-size:11px;color:#8A7B70;letter-spacing:.18em;font-weight:bold}
+.emoji{font-size:58px;margin-top:8px}
+.title{font-size:34px;font-weight:800;color:var(--maroon);line-height:1.1;margin:8px 0}
+.body{font-size:17px;line-height:1.6;color:#5C534D}
+.divider{width:70px;height:3px;margin:16px auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.vote{display:flex;justify-content:center;gap:14px;margin-top:22px}
+.vote button{font-size:28px;padding:10px 18px;border-radius:14px;border:1px solid #E6E0D6;background:#FFF;cursor:pointer}
+.thanks{display:none;color:#2F855A;font-weight:bold;margin-top:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid #EEE3D5}
+.stat{background:var(--cream);border-radius:14px;padding:12px}.num{font-size:24px;font-weight:bold;color:var(--maroon)}.lbl{font-size:11px;color:#85786E;text-transform:uppercase}
+.bingo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.bingo-tile{background:var(--cream);border:1px solid #E8DDCA;border-radius:12px;padding:8px;font-size:11px;line-height:1.35;min-height:92px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;user-select:none}
+.bingo-tile.checked{background:#E8F6EC;border-color:#4CAF50}
+.rps{display:flex;justify-content:center;gap:12px;margin-top:18px}.rps button{font-size:30px;padding:12px 16px;border-radius:14px;border:1px solid #DDD;background:#FFF;cursor:pointer}.rps-result{margin-top:14px;font-weight:bold;line-height:1.6}
+.footer{padding:18px;border-top:1px solid #F0E6D6;text-align:center;font-size:12px;color:#8F8073}
 .hidden{display:none}
-.gameBox{margin-top:14px}
-.choice{
-  display:inline-block;
-  margin:6px;
-  padding:10px 16px;
-  border-radius:12px;
-  background:#f4f4f4;
-  cursor:pointer;
-  font-size:28px;
-}
-.result{margin-top:12px;font-weight:bold}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="badge" id="header"></div>
-  <h1>🎁 Lucky Treat</h1>
-  <div class="school" id="school"></div>
-  <div class="category" id="category"></div>
-  <div class="emoji" id="emoji"></div>
-  <div class="message" id="message"></div>
-  <div class="sub" id="sub"></div>
-
-  <div id="game" class="gameBox hidden">
-    <p><strong>Choose one:</strong></p>
-    <div>
-      <span class="choice" onclick="play('✊')">✊</span>
-      <span class="choice" onclick="play('✋')">✋</span>
-      <span class="choice" onclick="play('✌️')">✌️</span>
-    </div>
-    <div class="result" id="gameResult"></div>
+  <div class="header">
+    <div class="badge">HAPPY TEACHERS' DAY</div>
+    <div class="school">Beatty Secondary School</div>
   </div>
 
-  <button onclick="showRandom()">✨ Another Treat</button>
-  <div class="footer">Happy Teachers' Day • Scan again for a new surprise</div>
+  <div id="giftView" class="section">
+    <div class="gift" onclick="unwrap()">
+      <div class="v"></div><div class="h"></div>
+    </div>
+    <h2 style="color:#5C1430;margin:0">A Little Gift For You</h2>
+    <p style="color:#75695E">Every Beatty teacher deserves a little surprise. Tap to unwrap yours.</p>
+  </div>
+
+  <div id="resultView" class="section hidden">
+    <div class="category" id="category"></div>
+    <div class="emoji" id="emoji"></div>
+    <div class="title" id="title"></div>
+    <div class="divider"></div>
+    <div class="body" id="body"></div>
+    <div id="extra"></div>
+
+    <div class="vote" id="voteRow">
+      <button onclick="submitVote('up')">👍</button>
+      <button onclick="submitVote('down')">👎</button>
+    </div>
+    <div class="thanks" id="thanks">💛 Thank you for your feedback!</div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num" id="scanCount">–</div>
+        <div class="lbl">Gifts Unwrapped</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="deviceCount">–</div>
+        <div class="lbl">Unique Devices</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">With appreciation from the Beatty PSG 💛</div>
 </div>
 
 <script>
-/* ========= EASY EDIT SECTION ========= */
-const SCHOOL_NAME = "Beatty Secondary School";
-const HEADER_TEXT = "Happy Teachers' Day";
-const SHOW_SCHOOL = true;
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby49XCFF5hBd1YTYZpxDbTxNtxiNEtJsYBLL4PIlHNkU2ErdY4FVxFEm7vf8VEDOfiFMw/exec";
 
-const QUOTES = [
-["🌱","Every lesson plants a seed.","Thank you for helping young minds grow."],
-["✨","Progress, not perfection.","The little moments matter most."],
-["📚","You change more lives than you realise.","Your impact goes beyond the classroom."],
-["💛","A kind teacher is never forgotten.","Thank you for believing in your students."],
-["🦋","Curiosity begins with someone like you.","Keep inspiring, one lesson at a time."],
-["🌈","Your patience becomes someone else's confidence.","Happy Teachers' Day!"],
-["☀️","Small acts. Big impact.","You make school a brighter place."],
-["🎓","Education is hope in action.","Thank you for showing up every day."]
+const QUOTES=[
+ ["🌱","Every lesson plants a seed.","Thank you for helping young minds grow into confident, curious individuals."],
+ ["✨","You matter more than you realise.","The encouragement you give today may stay with a student for life."],
+ ["🦋","Your patience becomes someone else's confidence.","Someone is becoming braver because of you."]
 ];
 
-const WISHES = [
-["🍀","Jiayou lah!","May your kopi stay hot and your students stay kind."],
-["💰","Huat ah!","May today bring joy, laughter and smooth lessons."],
-["☕","Chope some happiness today.","You deserve the best seat in the staff room."],
-["🧋","Perfect pearl ratio!","May every bubble tea you drink be 10/10."],
-["🌺","Steady bom pi pi.","May your marking pile magically shrink."],
-["🌤️","Today's forecast: Appreciation.","100% chance of smiles."],
-["🚌","Green lights all the way.","May every journey home be smooth."],
-["🎉","Shiok day ahead!","Treat yourself—you've earned it."]
+const WISHES=[
+ ["🍀","Jiayou, lah!","May your kopi stay hot, your students submit on time, and your Wi-Fi never disconnect."],
+ ["🧋","Shiok week ahead!","May every bubble tea have the perfect pearl ratio and every lesson end with applause."],
+ ["💰","Huat ah!","May your marking pile shrink faster than the chicken rice queue."]
 ];
 
-const FORTUNES = [
-"Today someone will make you smile.",
-"Good news is closer than you think.",
-"Kindness you gave will come back to you.",
-"Coffee tastes better after compliments.",
-"Your lucky number today is " + (Math.floor(Math.random()*99)+1)
+const HUMOUR=[
+ ["☕","Staff Room Prophecy","The moment you finally sit down with your kopi… someone will say, 'Cher, got one minute?'"],
+ ["📄","Singapore Teacher Logic","The printer only jams when you're printing 38 worksheets. Never when it's just 3."],
+ ["🚌","Peak Hour Achievement","If you got a seat on the MRT after school today… that's your real Teachers' Day gift."],
+ ["😅","Classic Beatty Energy","You opened Google Classroom for one thing… and forgot why you were there."]
 ];
-/* ==================================== */
 
-const cat=document.getElementById('category');
-const emoji=document.getElementById('emoji');
-const msg=document.getElementById('message');
-const sub=document.getElementById('sub');
-const game=document.getElementById('game');
+const BINGO=[
+ "Cher, can go toilet?","I forgot my homework.","Settle down, please.","Student made you laugh.","Unexpected timetable change.","Colleague rescued your printer.","Finished kopi while still hot.","Parent messaged after 9pm.","Projector worked first try!","Can extend deadline?","You survived a fire drill.","A student actually said 'Thank you, Cher.'"
+];
 
-document.getElementById('header').textContent=HEADER_TEXT;
-document.getElementById('school').textContent=SHOW_SCHOOL?SCHOOL_NAME:"";
+const FORTUNES=[
+ "Someone will make you smile before the day ends.",
+ "Coffee will taste extra good tomorrow.",
+ "Your lucky number this week is " + (Math.floor(Math.random()*90)+10) + ".",
+ "Kindness you gave will come back to you."
+];
 
-function confetti(){
-  for(let i=0;i<24;i++){
-    const d=document.createElement('div');
-    d.className='confetti';
-    d.style.left=Math.random()*100+'%';
-    d.style.background=['#f94144','#f9c74f','#90be6d','#577590','#f3722c'][Math.floor(Math.random()*5)];
-    d.style.animationDelay=(Math.random()*0.5)+'s';
-    document.body.appendChild(d);
-    setTimeout(()=>d.remove(),3200);
-  }
+let currentCategory="";
+let deviceId=localStorage.getItem("beatty_device");
+if(!deviceId){deviceId=crypto.randomUUID();localStorage.setItem("beatty_device",deviceId);}
+
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(arr){let a=[...arr];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+async function callAPI(action,vote=""){
+ if(APPS_SCRIPT_URL.startsWith("YOUR_")) return;
+ const r=await fetch(APPS_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({deviceId,action,vote})});
+ const d=await r.json();
+ document.getElementById("scanCount").textContent=d.totalScans;
+ document.getElementById("deviceCount").textContent=d.uniqueDevices;
 }
 
-function randomItem(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-function showRandom(){
-  document.getElementById('gameResult').textContent='';
-  game.classList.add('hidden');
-  const roll=Math.random();
-  if(roll<0.4){
-    const q=randomItem(QUOTES);
-    cat.textContent='INSPIRATION';
-    emoji.textContent=q[0];
-    msg.textContent=q[1];
-    sub.textContent=q[2];
-  }else if(roll<0.8){
-    const w=randomItem(WISHES);
-    cat.textContent='SINGAPORE WISH';
-    emoji.textContent=w[0];
-    msg.textContent=w[1];
-    sub.textContent=w[2];
-  }else{
-    cat.textContent='MINI GAME';
-    emoji.textContent='🎮';
-    msg.textContent='Rock • Paper • Scissors';
-    sub.textContent='Beat your phone to win a lucky blessing!';
-    game.classList.remove('hidden');
-  }
-  confetti();
+async function unwrap(){
+ document.getElementById("giftView").classList.add("hidden");
+ document.getElementById("resultView").classList.remove("hidden");
+ const r=Math.random();
+ if(r<0.25) showQuote();
+ else if(r<0.45) showWish();
+ else if(r<0.70) showHumour();
+ else if(Math.random()<0.5) showBingo();
+ else showGame();
+ await callAPI("scan");
 }
 
-function play(user){
-  const opts=['✊','✋','✌️'];
-  const phone=opts[Math.floor(Math.random()*3)];
-  const bless=randomItem(FORTUNES);
-  let outcome='';
-  if(user===phone) outcome="It's a draw 🤝";
-  else if((user==='✊'&&phone==='✌️')||(user==='✋'&&phone==='✊')||(user==='✌️'&&phone==='✋')) outcome='You win! 🏆';
-  else outcome='Phone wins 😄';
-  document.getElementById('gameResult').innerHTML=`You: ${user} &nbsp; Phone: ${phone}<br><br>${outcome}<br>🍀 ${bless}`;
+function setContent(cat,emo,title,body){
+ currentCategory=cat;
+ document.getElementById("category").textContent=cat.toUpperCase();
+ document.getElementById("emoji").textContent=emo;
+ document.getElementById("title").textContent=title;
+ document.getElementById("body").textContent=body;
+ document.getElementById("extra").innerHTML="";
 }
 
-showRandom();
+function showQuote(){let q=pick(QUOTES);setContent("Inspirational",q[0],q[1],q[2]);}
+function showWish(){let w=pick(WISHES);setContent("Good Luck",w[0],w[1],w[2]);}
+function showHumour(){let h=pick(HUMOUR);setContent("Singapore Humour",h[0],h[1],h[2]);}
+
+function showBingo(){
+ setContent("This Week","🐝","Beatty Teacher Bingo","How many of these happened this week?");
+ const grid=document.createElement("div");
+ grid.className="bingo-grid";
+ shuffle(BINGO).slice(0,9).forEach(item=>{
+   const tile=document.createElement("div");
+   tile.className="bingo-tile";
+   tile.innerHTML="⬜<br>"+item;
+   tile.onclick=()=>{
+     tile.classList.toggle("checked");
+     tile.innerHTML=(tile.classList.contains("checked")?"✅":"⬜")+"<br>"+item;
+   };
+   grid.appendChild(tile);
+ });
+ document.getElementById("extra").appendChild(grid);
+}
+
+function showGame(){
+ setContent("Mini Game","✊","Rock • Paper • Scissors","Beat your phone to earn a lucky fortune!");
+ const wrap=document.createElement("div");
+ wrap.className="rps";
+ ["✊","✋","✌️"].forEach(c=>{
+   const b=document.createElement("button");
+   b.textContent=c;
+   b.onclick=()=>playRPS(c);
+   wrap.appendChild(b);
+ });
+ const res=document.createElement("div");
+ res.id="rpsResult";
+ res.className="rps-result";
+ document.getElementById("extra").appendChild(wrap);
+ document.getElementById("extra").appendChild(res);
+}
+
+function playRPS(user){
+ const phone=pick(["✊","✋","✌️"]);
+ let msg="It's a draw 🤝";
+ if((user==="✊"&&phone==="✌️")||(user==="✋"&&phone==="✊")||(user==="✌️"&&phone==="✋")) msg="🏆 You win!";
+ else if(user!==phone) msg="😄 Phone wins!";
+ document.getElementById("rpsResult").innerHTML=`You: ${user} &nbsp;&nbsp; Phone: ${phone}<br><br>${msg}<br><br>🍀 ${pick(FORTUNES)}`;
+}
+
+async function submitVote(vote){
+ document.getElementById("voteRow").style.display="none";
+ document.getElementById("thanks").style.display="block";
+ await callAPI("feedback",vote);
+}
 </script>
 </body>
 </html>
