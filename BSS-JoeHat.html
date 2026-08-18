@@ -24,11 +24,13 @@ body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9
   cursor:pointer;
   border-radius:22px;
   overflow:hidden;
+  z-index:1;
+  touch-action:manipulation;
 
-  background:linear-gradient(145deg,#A1264C 0%,#8C1D40 55%,#701634 100%);
+  background:linear-gradient(180deg,#9F2349 0%,#8C1D40 100%);
   box-shadow:
-    0 14px 28px rgba(140,29,64,.35),
-    inset 0 1px 0 rgba(255,255,255,.18);
+    0 14px 28px rgba(140,29,64,.28),
+    inset 0 1px 0 rgba(255,255,255,.15);
 
   transition:transform .18s ease;
 }
@@ -37,25 +39,28 @@ body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9
   transform:translateY(-3px) scale(1.03);
 }
 
+/* Vertical gold ribbon */
 .gift::before{
   content:"";
   position:absolute;
-  left:calc(50% - 9px);
+  left:calc(50% - 8px);
   top:0;
-  width:18px;
+  width:16px;
   height:100%;
-  background:linear-gradient(#F5D76E,#D4AF37);
+  background:linear-gradient(180deg,#F8E38A,#D4AF37,#F8E38A);
   pointer-events:none;
 }
 
+/* Gift lid (instead of a middle ribbon) */
 .gift::after{
   content:"";
   position:absolute;
   left:0;
-  top:calc(50% - 9px);
+  top:0;
   width:100%;
-  height:18px;
-  background:linear-gradient(90deg,#F5D76E,#D4AF37,#F5D76E);
+  height:28px;
+  background:rgba(255,255,255,.08);
+  border-bottom:3px solid rgba(212,175,55,.9);
   pointer-events:none;
 }
 .category{font-size:11px;color:#8A7B70;letter-spacing:.18em;font-weight:bold}
@@ -81,38 +86,7 @@ body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9
 .rps{display:flex;justify-content:center;gap:12px;margin-top:16px}
 .rps button{font-size:28px;padding:10px 14px;border-radius:12px;border:1px solid #DDD;background:#fff;cursor:pointer}
 .result{margin-top:12px;font-weight:bold;line-height:1.6}
-.knot{
-  position:absolute;
-  width:20px;
-  height:20px;
-  background:#F5D76E;
-  border-radius:50%;
-  left:50%;
-  top:34%;
-  transform:translate(-50%,-50%);
-  z-index:3;
-  pointer-events:none;
-}
 
-.bow{
-  position:absolute;
-  width:28px;
-  height:18px;
-  border:7px solid #F5D76E;
-  border-radius:100% 100% 70% 70%;
-  top:18px;
-  pointer-events:none;
-}
-
-.bow-left{
-  left:34px;
-  transform:rotate(-28deg);
-}
-
-.bow-right{
-  right:34px;
-  transform:rotate(28deg);
-}
 .modal{
   position:fixed;
   inset:0;
