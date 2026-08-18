@@ -1,4 +1,4 @@
-{`<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -212,6 +212,7 @@ function shuffle(a){
  return a;
 }
 
+ 
 async function api(action,v=""){
  if(APPS_SCRIPT_URL.startsWith("YOUR_")) return;
  const r=await fetch(APPS_SCRIPT_URL,{
@@ -247,6 +248,7 @@ async function unwrap(){
  else game();
 
  await api("scan");
+startAnotherGiftTimer();
 }
 
 function quote(){const q=pick(QUOTES);setView("Inspirational",...q);}
@@ -282,7 +284,9 @@ function checkBingo(){
  if(window.bingoDone) return;
  if(w.some(l=>l.every(i=>t[i]))){
    window.bingoDone=true;
-   confetti();
+   clearTimeout(againTimer);
+closeModal();
+confetti();
    const m=document.createElement("div");
    m.className="win";
    m.textContent="🎉 BINGO! Confirm plus chop!";
@@ -317,6 +321,8 @@ function game(){
    const b=document.createElement("button");
    b.textContent=c;
    b.onclick=()=>{
+     clearTimeout(againTimer);
+     closeModal();
      const p=pick(["✊","✋","✌️"]);
      let m="It's a draw 🤝";
      if((c==="✊"&&p==="✌️")||(c==="✋"&&p==="✊")||(c==="✌️"&&p==="✋")) m="🏆 You win!";
@@ -331,6 +337,19 @@ function game(){
  $("extra").appendChild(out);
 }
 
+let againTimer = null;
+
+function startAnotherGiftTimer() {
+  clearTimeout(againTimer);
+
+  againTimer = setTimeout(() => {
+    $("againModal").classList.remove("hidden");
+  }, 5000);
+}
+
+function closeModal() {
+  $("againModal").classList.add("hidden");
+}
 async function vote(v){
  $("voteRow").style.display="none";
  $("thanks").style.display="block";
@@ -350,4 +369,4 @@ async function vote(v){
   </div>
 </div>
 </body>
-</html>`}
+</html>
