@@ -46,14 +46,14 @@ body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.45);
-  display:flex;
+  display:none;              /* IMPORTANT */
   align-items:center;
   justify-content:center;
   z-index:999;
 }
 
-.modal.hidden{
-  display:none;
+.modal.show{
+  display:flex;
 }
 
 .modal-card{
@@ -343,12 +343,12 @@ function startAnotherGiftTimer() {
   clearTimeout(againTimer);
 
   againTimer = setTimeout(() => {
-    $("againModal").classList.remove("hidden");
+    $("againModal").classList.add("show");
   }, 5000);
 }
 
 function closeModal() {
-  $("againModal").classList.add("hidden");
+  $("againModal").classList.remove("show");
 }
 async function vote(v){
  $("voteRow").style.display="none";
@@ -356,7 +356,7 @@ async function vote(v){
  await api("feedback",v);
 }
 </script>
-<div id="againModal" class="modal hidden">
+<div id="againModal" class="modal">
   <div class="modal-card">
     <div style="font-size:42px;">🎁</div>
     <h3>Another gift?</h3>
