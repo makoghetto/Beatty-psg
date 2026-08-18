@@ -70,7 +70,42 @@ body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9
 .divider{width:70px;height:3px;margin:16px auto;background:linear-gradient(90deg,transparent,var(--g),transparent)}
 .hidden{display:none}
 .vote{display:flex;justify-content:center;gap:14px;margin-top:20px}
-.vote button{font-size:26px;padding:10px 16px;border-radius:14px;border:1px solid #DDD;background:#fff;cursor:pointer}
+.vote button{
+  width:58px;
+  height:58px;
+  border-radius:16px;
+  border:2px solid;
+  font-size:28px;
+  cursor:pointer;
+  transition:.18s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 👍 Like */
+.vote button:first-child{
+  background:#F0FFF4;
+  border-color:#86D69C;
+  color:#1B8A3A;
+}
+
+.vote button:first-child:hover{
+  background:#DFF7E7;
+  transform:translateY(-2px);
+}
+
+/* 👎 Dislike */
+.vote button:last-child{
+  background:#FFF5F5;
+  border-color:#E8A5A5;
+  color:#C0392B;
+}
+
+.vote button:last-child:hover{
+  background:#FCE4E4;
+  transform:translateY(-2px);
+}
 .thanks{display:none;color:#2F855A;font-weight:bold;margin-top:10px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
 .stat{background:var(--c);padding:12px;border-radius:14px}
@@ -374,7 +409,7 @@ function bingo(){
 }
 
 function game(){
- setView("Mini Game","✊","Rock • Paper • Scissors","Beat your phone to earn a lucky fortune!");
+ setView("Mini Game","✊","Scissors • Paper • Stone","Beat your phone to earn a lucky fortune!");
  const r=document.createElement("div");
  r.className="rps";
  ["✊","✋","✌️"].forEach(c=>{
