@@ -340,12 +340,14 @@ function humour(){const h=pick(HUMOUR);setView("Singapore Humour",...h);}
 function coupon(){
  const c=pick(COUPONS);
  setView("Singlish Coupon",c[0],c[1],"");
- $("extra").innerHTML=\`
-   <div class="coupon">
-     <div style="font-size:10px;font-weight:bold;color:#8B6A00">OFFICIAL SINGLISH QUALITY SEAL</div>
-     <div style="margin-top:8px">\${c[2]}</div>
-     <div class="stamp">\${pick(STAMPS)}</div>
-   </div>\`;
+$("extra").innerHTML=`
+  <div class="coupon">
+    <div style="font-size:10px;font-weight:bold;color:#8B6A00">
+      OFFICIAL SINGLISH QUALITY SEAL
+    </div>
+    <div style="margin-top:8px">${c[2]}</div>
+    <div class="stamp">${pick(STAMPS)}</div>
+  </div>`;
 }
 
 function confetti(){
@@ -409,7 +411,7 @@ function game(){
      let m="It's a draw 🤝";
      if((c==="✊"&&p==="✌️")||(c==="✋"&&p==="✊")||(c==="✌️"&&p==="✋")) m="🏆 You win!";
      else if(c!==p) m="😄 Phone wins!";
-     out.innerHTML=\`You: \${c} &nbsp;&nbsp; Phone: \${p}<br><br>\${m}<br><br>🍀 \${pick(FORTUNES)}\`;
+     out.innerHTML=`You: ${c} &nbsp;&nbsp; Phone: ${p}<br><br>${m}<br><br>🍀 ${pick(FORTUNES)}`;
    };
    r.appendChild(b);
  });
