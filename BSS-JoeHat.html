@@ -1,225 +1,51 @@
-<!DOCTYPE html>
+{`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beatty Teachers' Day Gift</title>
 
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E👩‍🏫%3C/text%3E%3C/svg%3E">
+
 <style>
-:root{
-  --maroon:#8C1D40;
-  --gold:#D4AF37;
-  --cream:#FBF8F2;
-  --text:#4A3B36;
-}
+:root{--m:#8C1D40;--g:#D4AF37;--c:#FBF8F2}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:radial-gradient(circle at top,#FFFDF9,#F3E7D8 70%,#EAD7C4);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  padding:20px;
-}
-.card{
-  width:100%;
-  max-width:430px;
-  background:rgba(255,255,255,.95);
-  border-radius:28px;
-  box-shadow:0 18px 45px rgba(0,0,0,.12);
-  overflow:hidden;
-}
-.header{padding:26px;text-align:center}
-.badge{
-  display:inline-block;
-  background:#F8EDC8;
-  color:#8B6A00;
-  padding:7px 14px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:bold;
-  letter-spacing:.08em;
-}
-.school{margin-top:10px;color:var(--maroon);font-weight:bold}
+body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#FFFDF9,#F3E7D8 70%,#EAD7C4);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+.card{width:100%;max-width:430px;background:#fff;border-radius:28px;box-shadow:0 18px 45px rgba(0,0,0,.12);overflow:hidden}
+.header{text-align:center;padding:24px}
+.badge{display:inline-block;background:#F8EDC8;color:#8B6A00;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:bold;letter-spacing:.08em}
+.school{margin-top:10px;color:var(--m);font-weight:bold}
 .section{padding:0 24px 28px;text-align:center}
-.gift{
-  width:130px;height:130px;
-  margin:18px auto;
-  border-radius:24px;
-  background:linear-gradient(135deg,#8C1D40,#C73E5B);
-  position:relative;
-  cursor:pointer;
-  box-shadow:0 12px 24px rgba(140,29,64,.35);
-}
-.ribbon-v{
-  position:absolute;
-  width:18px;height:100%;
-  background:var(--gold);
-  left:calc(50% - 9px);
-}
-.ribbon-h{
-  position:absolute;
-  width:100%;height:18px;
-  background:var(--gold);
-  top:calc(50% - 9px);
-}
-.category{
-  font-size:11px;
-  color:#8A7B70;
-  letter-spacing:.18em;
-  font-weight:bold;
-}
-.emoji{font-size:58px;margin-top:10px}
-.title{
-  font-size:32px;
-  font-weight:800;
-  color:var(--maroon);
-  line-height:1.1;
-  margin:8px 0;
-}
-.divider{
-  width:70px;height:3px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  margin:16px auto;
-}
-.body{
-  font-size:17px;
-  line-height:1.6;
-  color:#5C534D;
-}
+.gift{width:130px;height:130px;margin:18px auto;border-radius:22px;background:linear-gradient(135deg,#8C1D40,#C73E5B);position:relative;cursor:pointer}
+.gift:before{content:"";position:absolute;left:calc(50% - 9px);width:18px;height:100%;background:var(--g)}
+.gift:after{content:"";position:absolute;top:calc(50% - 9px);width:100%;height:18px;background:var(--g)}
+.category{font-size:11px;color:#8A7B70;letter-spacing:.18em;font-weight:bold}
+.emoji{font-size:56px;margin-top:8px}
+.title{font-size:30px;font-weight:800;color:var(--m);line-height:1.1;margin:8px 0}
+.body{font-size:16px;line-height:1.6;color:#5C534D}
+.divider{width:70px;height:3px;margin:16px auto;background:linear-gradient(90deg,transparent,var(--g),transparent)}
 .hidden{display:none}
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:24px;
-  padding-top:18px;
-  border-top:1px solid #EEE3D5;
-}
-.stat{
-  background:var(--cream);
-  border-radius:14px;
-  padding:12px;
-}
-.num{
-  font-size:24px;
-  font-weight:bold;
-  color:var(--maroon);
-}
-.lbl{
-  font-size:11px;
-  color:#8A7B70;
-  text-transform:uppercase;
-}
-.vote{
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  margin-top:22px;
-}
-.vote button{
-  font-size:28px;
-  padding:10px 18px;
-  border-radius:14px;
-  border:1px solid #DDD;
-  background:white;
-  cursor:pointer;
-}
-.thanks{
-  display:none;
-  color:#2F855A;
-  font-weight:bold;
-  margin-top:10px;
-}
-.footer{
-  padding:18px;
-  border-top:1px solid #F0E6D6;
-  text-align:center;
-  font-size:12px;
-  color:#8F8073;
-}
-
-/* Bingo */
-.bingo-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:18px;
-}
-.bingo-tile{
-  background:var(--cream);
-  border:1px solid #E8DDCA;
-  border-radius:12px;
-  padding:8px;
-  font-size:11px;
-  line-height:1.35;
-  min-height:90px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  cursor:pointer;
-}
-.bingo-tile.checked{
-  background:#E8F6EC;
-  border-color:#4CAF50;
-}
-
-/* Coupon */
-.coupon{
-  margin-top:18px;
-  padding:18px;
-  background:#FFF8E8;
-  border:2px dashed #D4AF37;
-  border-radius:18px;
-}
-.coupon-label{
-  font-size:10px;
-  letter-spacing:.12em;
-  color:#8B6A00;
-  font-weight:bold;
-}
-.coupon-text{
-  margin-top:8px;
-  font-size:15px;
-  line-height:1.6;
-}
-.coupon-stamp{
-  margin-top:14px;
-  display:inline-block;
-  padding:6px 12px;
-  border:2px solid #C62828;
-  color:#C62828;
-  font-weight:bold;
-  border-radius:999px;
-  transform:rotate(-8deg);
-  font-size:11px;
-}
-
-/* RPS */
-.rps{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  margin-top:18px;
-}
-.rps button{
-  font-size:30px;
-  padding:12px 16px;
-  border-radius:14px;
-  border:1px solid #DDD;
-  background:white;
-}
-.rps-result{
-  margin-top:14px;
-  font-weight:bold;
-  line-height:1.6;
-}
+.vote{display:flex;justify-content:center;gap:14px;margin-top:20px}
+.vote button{font-size:26px;padding:10px 16px;border-radius:14px;border:1px solid #DDD;background:#fff;cursor:pointer}
+.thanks{display:none;color:#2F855A;font-weight:bold;margin-top:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.stat{background:var(--c);padding:12px;border-radius:14px}
+.num{font-size:22px;font-weight:bold;color:var(--m)}
+.lbl{font-size:11px;color:#888;text-transform:uppercase}
+.footer{padding:18px;border-top:1px solid #EEE;text-align:center;font-size:12px;color:#888}
+.bingo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.tile{background:var(--c);border:1px solid #E8DDCA;border-radius:12px;padding:8px;font-size:11px;min-height:86px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;text-align:center}
+.tile.checked{background:#E8F6EC;border-color:#4CAF50}
+.win{margin-top:12px;color:#C62828;font-weight:bold}
+.coupon{margin-top:18px;background:#FFF8E8;border:2px dashed var(--g);border-radius:16px;padding:16px}
+.stamp{display:inline-block;margin-top:12px;padding:6px 10px;border:2px solid #C62828;color:#C62828;font-size:11px;font-weight:bold;border-radius:999px;transform:rotate(-8deg)}
+.rps{display:flex;justify-content:center;gap:12px;margin-top:16px}
+.rps button{font-size:28px;padding:10px 14px;border-radius:12px;border:1px solid #DDD;background:#fff;cursor:pointer}
+.result{margin-top:12px;font-weight:bold;line-height:1.6}
+.confetti{position:fixed;width:8px;height:14px;top:-20px;pointer-events:none;animation:fall 2.8s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 </style>
 </head>
-
 <body>
 
 <div class="card">
@@ -230,285 +56,229 @@ body{
   </div>
 
   <div id="giftView" class="section">
-    <div class="gift" onclick="unwrap()">
-      <div class="ribbon-v"></div>
-      <div class="ribbon-h"></div>
-    </div>
-
+    <div class="gift" onclick="unwrap()"></div>
     <h2 style="color:#5C1430;margin:0">A Little Gift For You</h2>
-    <p style="color:#75695E">
-      Every Beatty teacher deserves a little surprise. Tap to unwrap yours.
-    </p>
+    <p>Every Beatty teacher deserves a little surprise. Tap to unwrap yours.</p>
   </div>
 
   <div id="resultView" class="section hidden">
-
-    <div class="category" id="category"></div>
-    <div class="emoji" id="emoji"></div>
-    <div class="title" id="title"></div>
-
+    <div class="category" id="cat"></div>
+    <div class="emoji" id="emo"></div>
+    <div class="title" id="ttl"></div>
     <div class="divider"></div>
-
-    <div class="body" id="body"></div>
-
+    <div class="body" id="txt"></div>
     <div id="extra"></div>
 
     <div class="vote" id="voteRow">
-      <button onclick="submitVote('up')">👍</button>
-      <button onclick="submitVote('down')">👎</button>
+      <button onclick="vote('up')">👍</button>
+      <button onclick="vote('down')">👎</button>
     </div>
-
-    <div class="thanks" id="thanks">
-      💛 Thank you for your feedback!
-    </div>
+    <div class="thanks" id="thanks">💛 Thank you for your feedback!</div>
 
     <div class="stats">
-      <div class="stat">
-        <div class="num" id="scanCount">–</div>
-        <div class="lbl">Gifts Unwrapped</div>
-      </div>
-      <div class="stat">
-        <div class="num" id="deviceCount">–</div>
-        <div class="lbl">Unique Devices</div>
-      </div>
+      <div class="stat"><div class="num" id="scans">–</div><div class="lbl">Gifts</div></div>
+      <div class="stat"><div class="num" id="devices">–</div><div class="lbl">Devices</div></div>
     </div>
-
   </div>
 
-  <div class="footer">
-    With appreciation from the Beatty PSG 💛
-  </div>
-
+  <div class="footer">With appreciation from the Beatty PSG 💛</div>
 </div>
 
 <script>
-
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby49XCFF5hBd1YTYZpxDbTxNtxiNEtJsYBLL4PIlHNkU2ErdY4FVxFEm7vf8VEDOfiFMw/exec";
 
-const QUOTES = [
-["🌱","Every lesson plants a seed.","Thank you for helping young minds grow into confident, curious individuals."],
-["✨","You matter more than you realise.","The encouragement you give today may stay with a student for life."],
-["🦋","Your patience becomes someone else's confidence.","Someone is becoming braver because of you."]
+
+const QUOTES=[
+["🌱","Every lesson plants a seed.","Thank you for helping young minds grow."],
+["✨","You matter more than you realise.","Your encouragement lasts longer than you think."],
+["🦋","Your patience becomes someone else's confidence.","Keep inspiring, Cher!"]
 ];
 
-const WISHES = [
-["🍀","Jiayou, lah!","May your kopi stay hot, your students submit on time, and your Wi-Fi never disconnect."],
-["🧋","Shiok week ahead!","May every bubble tea have the perfect pearl ratio and every lesson end with applause."],
+const WISHES=[
+["🍀","Jiayou, lah!","May your kopi stay hot and your Wi-Fi never disconnect."],
+["🧋","Shiok week ahead!","May every bubble tea have the perfect pearl ratio."],
 ["💰","Huat ah!","May your marking pile shrink faster than the chicken rice queue."]
 ];
 
-const HUMOUR = [
-["☕","Staff Room Prophecy","The moment you finally sit down with your kopi… someone will say, 'Cher, got one minute?'"],
-["📄","Singapore Teacher Logic","The printer only jams when you're printing 38 worksheets. Never when it's just 3."],
-["🚌","Peak Hour Achievement","If you got a seat on the MRT after school today… that's your real Teachers' Day gift."],
-["😅","Classic Beatty Energy","You opened Google Classroom for one thing… and forgot why you were there."]
+const HUMOUR=[
+["☕","Staff Room Prophecy","The moment you finally sit down with kopi… someone will say, 'Cher, got one minute?'"],
+["📄","Singapore Teacher Logic","The printer only jams when you're printing 38 worksheets."],
+["😅","Classic Beatty Energy","You opened Google Classroom… and forgot why."]
 ];
 
-const COUPONS = [
-["☕","1× Kopi Break Voucher","Redeem for one guilt-free kopi break. Staff room auntie says: Confirmed can one."],
-["😴","30-Minute Nap Pass","Valid only in your imagination. HR never approve, but we close one eye lah."],
-["📄","Printer Jam Immunity","Next print job guaranteed smooth. If jam… pretend never use this coupon."],
-["🧋","Bubble Tea Protection Plan","Calories consumed today officially don't count. Certified by the Ministry of Shiok."],
-["📚","Homework Extension Card","For teachers only. Mark tomorrow instead. Steady lah."],
-["🚫","'Cher, Can Go Toilet?' Shield","Blocks the next three toilet requests. Results not guaranteed."],
-["🎉","Friday Feeling Fast Pass","Makes today feel like Friday, even if it's only Tuesday."],
-["🚌","MRT Seat Reservation","One guaranteed seat after school. Terms & conditions: Depends on luck only."]
+const COUPONS=[
+["☕","1× Kopi Break Voucher","Redeem for one guilt-free kopi break."],
+["😴","30-Minute Nap Pass","Valid only in your imagination. HR never approve."],
+["📄","Printer Jam Immunity","Next print job guaranteed smooth."],
+["🧋","Bubble Tea Protection Plan","Calories today officially don't count."],
+["📚","Homework Extension Card","For teachers only. Mark tomorrow instead."],
+["🚫","'Cher, Can Go Toilet?' Shield","Blocks the next three toilet requests."],
+["🎉","Friday Feeling Fast Pass","Makes today feel like Friday."],
+["🚌","MRT Seat Reservation","One guaranteed seat after school. Maybe."]
 ];
 
-const BINGO = [
-"Cher, can go toilet?",
-"I forgot my homework.",
-"Settle down, please.",
-"Student made you laugh.",
-"Unexpected timetable change.",
-"Colleague rescued your printer.",
-"Finished kopi while still hot.",
-"Parent messaged after 9pm.",
-"Projector worked first try!",
-"Can extend deadline?",
-"You survived a fire drill.",
-"A student actually said 'Thank you, Cher.'"
+const STAMPS=[
+"STEADY POM PI PI",
+"DON'T SAY I BOJIO",
+"I NEVER BLUFF YOU",
+"ONZ LAH",
+"CONFIRM PLUS CHOP",
+"CONFIRM GUARANTEE CHOP"
 ];
 
-const FORTUNES = [
+const BINGO=[
+"Cher, can go toilet?","I forgot my homework.","Settle down, please.",
+"Student made you laugh.","Unexpected timetable change.","Colleague rescued your printer.",
+"Finished kopi while hot.","Parent messaged after 9pm.","Projector worked first try!",
+"Can extend deadline?","You survived a fire drill.","Student said 'Thank you, Cher.'"
+];
+
+const FORTUNES=[
 "Someone will make you smile before the day ends.",
 "Coffee will taste extra good tomorrow.",
-"Kindness you gave will come back to you.",
-"Your lucky number this week is " + (Math.floor(Math.random()*90)+10)
+"Kindness you gave will come back to you."
 ];
 
-let deviceId = localStorage.getItem("beatty_device");
-if(!deviceId){
-  deviceId = crypto.randomUUID();
-  localStorage.setItem("beatty_device",deviceId);
+let device=localStorage.getItem("beatty_device");
+if(!device){device=crypto.randomUUID();localStorage.setItem("beatty_device",device);}
+
+const $=id=>document.getElementById(id);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+function shuffle(a){
+ a=[...a];
+ for(let i=a.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
 }
 
-function pick(a){ return a[Math.floor(Math.random()*a.length)] }
-
-function shuffle(arr){
-  const a=[...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
+async function api(action,v=""){
+ if(APPS_SCRIPT_URL.startsWith("YOUR_")) return;
+ const r=await fetch(APPS_SCRIPT_URL,{
+   method:"POST",
+   headers:{"Content-Type":"text/plain"},
+   body:JSON.stringify({deviceId:device,action,vote:v})
+ });
+ const d=await r.json();
+ $("scans").textContent=d.totalScans;
+ $("devices").textContent=d.uniqueDevices;
 }
 
-async function callAPI(action,vote=""){
-  if(APPS_SCRIPT_URL.startsWith("YOUR_")) return;
-  const r=await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    headers:{"Content-Type":"text/plain"},
-    body:JSON.stringify({deviceId,action,vote})
-  });
-  const d=await r.json();
-  scanCount.textContent=d.totalScans;
-  deviceCount.textContent=d.uniqueDevices;
-}
-
-function setContent(cat,emo,titleText,bodyText){
-  category.textContent=cat.toUpperCase();
-  emoji.textContent=emo;
-  title.textContent=titleText;
-  body.textContent=bodyText;
-  extra.innerHTML="";
+function setView(cat,e,t,b){
+ $("cat").textContent=cat.toUpperCase();
+ $("emo").textContent=e;
+ $("ttl").textContent=t;
+ $("txt").textContent=b;
+ $("extra").innerHTML="";
+ $("voteRow").style.display="flex";
+ $("thanks").style.display="none";
 }
 
 async function unwrap(){
+ $("giftView").classList.add("hidden");
+ $("resultView").classList.remove("hidden");
 
-  giftView.classList.add("hidden");
-  resultView.classList.remove("hidden");
+ const r=Math.random();
+ if(r<0.20) quote();
+ else if(r<0.36) wish();
+ else if(r<0.52) humour();
+ else if(r<0.70) coupon();
+ else if(r<0.85) bingo();
+ else game();
 
-  const r=Math.random();
-
-  if(r<0.20) showQuote();
-  else if(r<0.36) showWish();
-  else if(r<0.52) showHumour();
-  else if(r<0.70) showCoupon();
-  else if(r<0.85) showBingo();
-  else showGame();
-
-  await callAPI("scan");
+ await api("scan");
 }
 
-function showQuote(){
-  const q=pick(QUOTES);
-  setContent("Inspirational",q[0],q[1],q[2]);
+function quote(){const q=pick(QUOTES);setView("Inspirational",...q);}
+function wish(){const w=pick(WISHES);setView("Good Luck Wish",...w);}
+function humour(){const h=pick(HUMOUR);setView("Singapore Humour",...h);}
+
+function coupon(){
+ const c=pick(COUPONS);
+ setView("Singlish Coupon",c[0],c[1],"");
+ $("extra").innerHTML=\`
+   <div class="coupon">
+     <div style="font-size:10px;font-weight:bold;color:#8B6A00">OFFICIAL SINGLISH QUALITY SEAL</div>
+     <div style="margin-top:8px">\${c[2]}</div>
+     <div class="stamp">\${pick(STAMPS)}</div>
+   </div>\`;
 }
 
-function showWish(){
-  const w=pick(WISHES);
-  setContent("Good Luck Wish",w[0],w[1],w[2]);
+function confetti(){
+ const colors=["#D4AF37","#8C1D40","#22C55E","#EC4899","#3B82F6"];
+ for(let i=0;i<60;i++){
+   const d=document.createElement("div");
+   d.className="confetti";
+   d.style.left=Math.random()*100+"vw";
+   d.style.background=pick(colors);
+   document.body.appendChild(d);
+   setTimeout(()=>d.remove(),2800);
+ }
 }
 
-function showHumour(){
-  const h=pick(HUMOUR);
-  setContent("Singapore Humour",h[0],h[1],h[2]);
+function checkBingo(){
+ const t=[...document.querySelectorAll(".tile")].map(x=>x.classList.contains("checked"));
+ const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ if(window.bingoDone) return;
+ if(w.some(l=>l.every(i=>t[i]))){
+   window.bingoDone=true;
+   confetti();
+   const m=document.createElement("div");
+   m.className="win";
+   m.textContent="🎉 BINGO! Confirm plus chop!";
+   $("extra").appendChild(m);
+ }
 }
 
-function showCoupon(){
-
-  const c=pick(COUPONS);
-
-  category.textContent="CONFIRMED CAN ONE";
-  emoji.textContent=c[0];
-  title.textContent=c[1];
-  body.textContent="";
-
-  const box=document.createElement("div");
-  box.className="coupon";
-  box.innerHTML=`
-    <div class="coupon-label">OFFICIAL SINGLISH QUALITY SEAL</div>
-    <div class="coupon-text">${c[2]}</div>
-    <div class="coupon-stamp">CONFIRMED CAN ONE ✔</div>
-  `;
-
-  extra.appendChild(box);
+function bingo(){
+ window.bingoDone=false;
+ setView("This Week","🐝","Beatty Teacher Bingo","How many of these happened this week?");
+ const g=document.createElement("div");
+ g.className="bingo";
+ shuffle(BINGO).slice(0,9).forEach(i=>{
+   const t=document.createElement("div");
+   t.className="tile";
+   t.innerHTML="⬜<br>"+i;
+   t.onclick=()=>{
+     t.classList.toggle("checked");
+     t.innerHTML=(t.classList.contains("checked")?"✅":"⬜")+"<br>"+i;
+     checkBingo();
+   };
+   g.appendChild(t);
+ });
+ $("extra").appendChild(g);
 }
 
-function showBingo(){
-
-  setContent("This Week","🐝","Beatty Teacher Bingo","How many of these happened this week?");
-
-  const grid=document.createElement("div");
-  grid.className="bingo-grid";
-
-  shuffle(BINGO).slice(0,9).forEach(item=>{
-
-    const tile=document.createElement("div");
-    tile.className="bingo-tile";
-    tile.innerHTML="⬜<br>"+item;
-
-    tile.onclick=()=>{
-      tile.classList.toggle("checked");
-      tile.innerHTML=(tile.classList.contains("checked")?"✅":"⬜")+"<br>"+item;
-    };
-
-    grid.appendChild(tile);
-
-  });
-
-  extra.appendChild(grid);
+function game(){
+ setView("Mini Game","✊","Rock • Paper • Scissors","Beat your phone to earn a lucky fortune!");
+ const r=document.createElement("div");
+ r.className="rps";
+ ["✊","✋","✌️"].forEach(c=>{
+   const b=document.createElement("button");
+   b.textContent=c;
+   b.onclick=()=>{
+     const p=pick(["✊","✋","✌️"]);
+     let m="It's a draw 🤝";
+     if((c==="✊"&&p==="✌️")||(c==="✋"&&p==="✊")||(c==="✌️"&&p==="✋")) m="🏆 You win!";
+     else if(c!==p) m="😄 Phone wins!";
+     out.innerHTML=\`You: \${c} &nbsp;&nbsp; Phone: \${p}<br><br>\${m}<br><br>🍀 \${pick(FORTUNES)}\`;
+   };
+   r.appendChild(b);
+ });
+ const out=document.createElement("div");
+ out.className="result";
+ $("extra").appendChild(r);
+ $("extra").appendChild(out);
 }
 
-function showGame(){
-
-  setContent("Mini Game","✊","Rock • Paper • Scissors","Beat your phone to earn a lucky fortune!");
-
-  const wrap=document.createElement("div");
-  wrap.className="rps";
-
-  ["✊","✋","✌️"].forEach(choice=>{
-
-    const b=document.createElement("button");
-    b.textContent=choice;
-
-    b.onclick=()=>play(choice);
-
-    wrap.appendChild(b);
-
-  });
-
-  const result=document.createElement("div");
-  result.id="rpsResult";
-  result.className="rps-result";
-
-  extra.appendChild(wrap);
-  extra.appendChild(result);
-
+async function vote(v){
+ $("voteRow").style.display="none";
+ $("thanks").style.display="block";
+ await api("feedback",v);
 }
-
-function play(user){
-
-  const phone=pick(["✊","✋","✌️"]);
-
-  let msg="It's a draw 🤝";
-
-  if(
-    (user==="✊"&&phone==="✌️")||
-    (user==="✋"&&phone==="✊")||
-    (user==="✌️"&&phone==="✋")
-  ){
-    msg="🏆 You win!";
-  }else if(user!==phone){
-    msg="😄 Phone wins!";
-  }
-
-  rpsResult.innerHTML=
-    `You: ${user} &nbsp;&nbsp; Phone: ${phone}<br><br>${msg}<br><br>🍀 ${pick(FORTUNES)}`;
-
-}
-
-async function submitVote(vote){
-
-  voteRow.style.display="none";
-  thanks.style.display="block";
-
-  await callAPI("feedback",vote);
-
-}
-
 </script>
 
 </body>
-</html>
+</html>`}
