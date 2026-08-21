@@ -16,109 +16,177 @@ img{width:200px}
 }
 .top-right-controls label{display:block;margin-bottom:4px;cursor:pointer}
 .top-right-controls label:last-child{margin-bottom:0}
+
+/* Password Screen Styles */
+#auth-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #f4f4f4; display: flex; justify-content: center; align-items: center;
+  z-index: 9999; font-family: Arial, sans-serif;
+}
+#auth-box {
+  background: #fff; padding: 30px; border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; width: 300px;
+}
+#auth-box input {
+  width: 80%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;
+}
+#auth-box button {
+  padding: 8px 16px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer;
+}
+#auth-box button:hover { background: #0056b3; }
+#auth-error { color: red; font-size: 12px; margin-top: 8px; display: none; }
+#main-content { display: none; }
 </style></head>
 <body>
 
-<div class="top-right-controls">
-  <label><input type="checkbox" id="showPrinted" checked> Show Already Printed</label>
-  <label><input type="checkbox" id="showOverwritten" checked> Show Overwritten Numbers</label>
+<!-- Password Screen Overlay -->
+<div id="auth-screen">
+  <div id="auth-box">
+    <h3>Gallery Access</h3>
+    <p style="font-size: 13px; color: #666;">Please enter the password</p>
+    <input type="password" id="pw-input" placeholder="Password">
+    <br>
+    <button id="pw-btn">Enter</button>
+    <div id="auth-error">Incorrect password</div>
+  </div>
 </div>
 
-<h2>Print Queue</h2>
-<p style="font-size:12px; color:#666;">Hold <b>Ctrl</b> (or <b>Cmd</b>) to select multiple colours.</p>
-<select id="filter" multiple>
-  <option value="RED" selected>🔴 Red</option>
-  <option value="BLU" selected>🔵 Blue</option>
-  <option value="YLW" selected>🟡 Yellow</option>
-  <option value="GRN" selected>🟢 Green</option>
-  <option value="WHT" selected>⚪ White</option>
-</select>
-<p id="err"></p>
-<div id="queue"></div>
-<h3 id="printed-header">Already Printed</h3>
-<div id="printed"></div>
+<!-- Main Protected Content -->
+<div id="main-content">
+  <div class="top-right-controls">
+    <label><input type="checkbox" id="showPrinted" checked> Show Already Printed</label>
+    <label><input type="checkbox" id="showOverwritten" checked> Show Overwritten Numbers</label>
+  </div>
+
+  <h2>Print Queue</h2>
+  <p style="font-size:12px; color:#666;">Hold <b>Ctrl</b> (or <b>Cmd</b>) to select multiple colours.</p>
+  <select id="filter" multiple>
+    <option value="RED" selected>🔴 Red</option>
+    <option value="BLU" selected>🔵 Blue</option>
+    <option value="YLW" selected>🟡 Yellow</option>
+    <option value="GRN" selected>🟢 Green</option>
+    <option value="WHT" selected>⚪ White</option>
+  </select>
+  <p id="err"></p>
+  <div id="queue"></div>
+  <h3 id="printed-header">Already Printed</h3>
+  <div id="printed"></div>
+</div>
 
 <script src="config.js"></script>
 <script>
-function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
-function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
-function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
+// Handle Password Authentication Logic
+const PASSWORD = "smile";
+const authScreen = document.getElementById('auth-screen');
+const mainContent = document.getElementById('main-content');
+const pwInput = document.getElementById('pw-input');
+const pwBtn = document.getElementById('pw-btn');
+const authError = document.getElementById('auth-error');
 
-function makeCard(p,isPrinted){
-  const div=document.createElement('div');
-  div.className='card'+(isPrinted?' printed-card':'');
-  div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
-  <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
-  <button>${isPrinted ? 'Undo' : 'Mark Printed'}</button>`;
-  
-  const btn = div.querySelector('button');
-  btn.onclick = async () => {
-    btn.disabled = true;
-    const actionName = isPrinted ? 'unprinted' : 'printed';
-    await fetch(API_URL,{
-      method: "POST",
-      mode: "no-cors",
-      headers: {"Content-Type":"text/plain"},
-      body: JSON.stringify({action: actionName, id: p.id})
-    });
-    setTimeout(load, 1500);
-  };
-  
-  return div;
+function unlockGallery() {
+  authScreen.style.display = 'none';
+  mainContent.style.display = 'block';
+  sessionStorage.setItem('gallery_auth', 'true');
+  initGallery();
 }
 
-async function load(){
-  try{
-    const res = await fetch(API_URL+"?action=list&t="+Date.now());
-    const rawText = await res.text();
-    
-    if(rawText.trim().startsWith('<')) {
-      // Log to console for debugging, but do not throw to UI
-      console.warn("Skipping refresh: Google returned an HTML redirect/login page.");
-      return; 
-    }
-    const d = JSON.parse(rawText);
-
-    const queue=document.getElementById('queue');
-    const printed=document.getElementById('printed');
-    const printedHeader=document.getElementById('printed-header');
-    
-    const selectedOptions = Array.from(document.getElementById('filter').selectedOptions).map(o => o.value);
-    const showPrinted = document.getElementById('showPrinted').checked;
-    const showOverwritten = document.getElementById('showOverwritten').checked;
-    
-    queue.innerHTML="";
-    printed.innerHTML="";
-    
-    printedHeader.style.display = showPrinted ? 'block' : 'none';
-    printed.style.display = showPrinted ? 'block' : 'none';
-    
-    d.forEach(p=>{
-      const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
-      if(!isMatch) return;
-      
-      const isOverwritten = p.name.length > 10;
-      if(!showOverwritten && isOverwritten) return;
-      
-      if(p.printed){
-        if(showPrinted) printed.appendChild(makeCard(p,true));
-      } else {
-        queue.appendChild(makeCard(p,false));
-      }
-    });
-    
-    if(!queue.children.length && (!printed.children.length || !showPrinted)) 
-        queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
-  }catch(e){
-    // Suppress screen warnings completely; log to background console instead
-    console.warn("Gallery load background retry due to network/parsing blip:", e.message);
+pwBtn.onclick = () => {
+  if (pwInput.value === PASSWORD) {
+    unlockGallery();
+  } else {
+    authError.style.display = 'block';
   }
+};
+
+pwInput.onkeypress = (e) => {
+  if (e.key === 'Enter') pwBtn.click();
+};
+
+// Check if already authenticated in current browser tab session
+if (sessionStorage.getItem('gallery_auth') === 'true') {
+  unlockGallery();
 }
 
-document.getElementById('filter').onchange = load;
-document.getElementById('showPrinted').onchange = load;
-document.getElementById('showOverwritten').onchange = load;
+// Original Gallery Scripts Wrapped
+function initGallery() {
+  function fileId(url){const m=url.match(/[?&]id=([^&]+)/);return m?m[1]:null;}
+  function thumbUrl(url){const id=fileId(url);return id?"https://drive.google.com/thumbnail?id="+id+"&sz=w800":url;}
+  function dlUrl(url){const id=fileId(url);return id?"https://drive.google.com/uc?export=download&id="+id:url;}
 
-load();
-setInterval(load,5000);
+  function makeCard(p,isPrinted){
+    const div=document.createElement('div');
+    div.className='card'+(isPrinted?' printed-card':'');
+    div.innerHTML=`<img src="${thumbUrl(p.url)}"><br>${p.name}<br>
+    <a href="${dlUrl(p.url)}" target="_blank">Download</a><br>
+    <button>${isPrinted ? 'Undo' : 'Mark Printed'}</button>`;
+    
+    const btn = div.querySelector('button');
+    btn.onclick = async () => {
+      btn.disabled = true;
+      const actionName = isPrinted ? 'unprinted' : 'printed';
+      await fetch(API_URL,{
+        method: "POST",
+        mode: "no-cors",
+        headers: {"Content-Type":"text/plain"},
+        body: JSON.stringify({action: actionName, id: p.id})
+      });
+      setTimeout(load, 1500);
+    };
+    
+    return div;
+  }
+
+  async function load(){
+    try{
+      const res = await fetch(API_URL+"?action=list&t="+Date.now());
+      const rawText = await res.text();
+      
+      if(rawText.trim().startsWith('<')) {
+        console.warn("Skipping refresh: Google returned an HTML redirect/login page.");
+        return; 
+      }
+      const d = JSON.parse(rawText);
+
+      const queue=document.getElementById('queue');
+      const printed=document.getElementById('printed');
+      const printedHeader=document.getElementById('printed-header');
+      
+      const selectedOptions = Array.from(document.getElementById('filter').selectedOptions).map(o => o.value);
+      const showPrinted = document.getElementById('showPrinted').checked;
+      const showOverwritten = document.getElementById('showOverwritten').checked;
+      
+      queue.innerHTML="";
+      printed.innerHTML="";
+      
+      printedHeader.style.display = showPrinted ? 'block' : 'none';
+      printed.style.display = showPrinted ? 'block' : 'none';
+      
+      d.forEach(p=>{
+        const isMatch = selectedOptions.some(colour => p.name.startsWith(colour));
+        if(!isMatch) return;
+        
+        const isOverwritten = p.name.length > 10;
+        if(!showOverwritten && isOverwritten) return;
+        
+        if(p.printed){
+          if(showPrinted) printed.appendChild(makeCard(p,true));
+        } else {
+          queue.appendChild(makeCard(p,false));
+        }
+      });
+      
+      if(!queue.children.length && (!printed.children.length || !showPrinted)) 
+          queue.innerHTML="<p style='color:#999'>No photos found matching selection.</p>";
+    }catch(e){
+      console.warn("Gallery load background retry due to network/parsing blip:", e.message);
+    }
+  }
+
+  document.getElementById('filter').onchange = load;
+  document.getElementById('showPrinted').onchange = load;
+  document.getElementById('showOverwritten').onchange = load;
+
+  load();
+  setInterval(load,5000);
+}
 </script></body></html>
