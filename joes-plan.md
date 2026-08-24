@@ -43,3 +43,7 @@ For teachers day, same photo taking functionality, but also with a display scree
 Display https://makoghetto.github.io/Beatty-psg/display.html
  - For viewing and downloading
 
+### Notes for 2027 
+
+#### Learnings from Golden Fiesta 2026 
+- The photo printer settings seemed require the photo to be set to portrait even though it was taken as landscape. To 'overwrite' the defaul settings, there is a "allow app to override defaults" check box which must be checked or unchecked (try until it works) - the settings are only applied when a photo is printed.
