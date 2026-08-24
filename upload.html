@@ -31,11 +31,27 @@ h2{margin:0 0 10px}
   text-align:center;letter-spacing:2px;flex-shrink:0
 }
 
+#options-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #222;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 0 0 10px 10px;
+  font-size: 13px;
+  gap: 4px;
+}
+#options-bar label {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 #preview-wrap {
   position: relative;
   width: 100%;
   max-width: 1800px;
-  margin: 0 auto;
+  margin: 10px auto 0 auto;
   line-height: 0;
 }
 #video {
@@ -61,7 +77,7 @@ h2{margin:0 0 10px}
   cursor:pointer;touch-action:manipulation
 }
 #snap{background:#c0392b;color:#fff}
-#upload-btn{background:#27ae60;color:#fff}
+#upload-btn{background:#27ae60;color:#fff;display:none}
 #file-input{display:none}
 
 #status{margin:6px 0;font-size:16px;color:#aaa;min-height:22px}
@@ -92,9 +108,13 @@ canvas{display:none}
     </div>
     <div id="numDisplay">01</div>
   </div>
-  <div style="margin: 10px; color: #fff; font-size: 14px;">
-    <input type="checkbox" id="burnText" checked> <label for="burnText">Burn label onto photo</label>
+  
+  <div id="options-bar">
+    <label><input type="checkbox" id="burnText" checked> Burn Label</label>
+    <label><input type="checkbox" id="showUpload"> Upload Btn</label>
+    <label><input type="checkbox" id="showOverlay" checked> Frame Overlay</label>
   </div>
+
   <div id="preview-wrap">
     <video id="video" autoplay playsinline></video>
     <img id="overlay" src="frame.png" alt="">
@@ -123,6 +143,14 @@ c.width=W;c.height=H;
 
 const COLOUR_MAP = {'RED': '#FF0000', 'BLU': '#0000FF', 'YLW': '#E6D000', 'GRN': '#008000', 'WHT': '#FFFFFF'};
 let selectedPhotoId = null;
+
+// Toggle options wiring
+document.getElementById('showUpload').onchange = (e) => {
+  document.getElementById('upload-btn').style.display = e.target.checked ? 'block' : 'none';
+};
+document.getElementById('showOverlay').onchange = (e) => {
+  document.getElementById('overlay').style.display = e.target.checked ? 'block' : 'none';
+};
 
 let currentNum=parseInt(localStorage.getItem('photoNum')||'1');
 function setNum(n){
@@ -154,10 +182,7 @@ function drawPhoto(ctx, imgSource, isFile){
   
   ctx.drawImage(isFile ? imgSource : v, sx, sy, sw, sh, 0, 0, W, H);
   
-  const f=new Image();
-  f.src=FRAME;
-  f.onload=()=>{
-    ctx.drawImage(f, 0, 0, W, H);
+  const drawFrameAndUpload = () => {
     if(document.getElementById('burnText').checked){
       const colourKey=document.getElementById('colour').value;
       const num=String(currentNum).padStart(2,'0');
@@ -168,6 +193,17 @@ function drawPhoto(ctx, imgSource, isFile){
     const quality = (typeof PHOTO_QUALITY !== 'undefined') ? PHOTO_QUALITY : 0.6;
     uploadPhoto(c.toDataURL('image/jpeg', quality));
   };
+
+  if(document.getElementById('showOverlay').checked) {
+    const f=new Image();
+    f.src=FRAME;
+    f.onload=()=>{
+      ctx.drawImage(f, 0, 0, W, H);
+      drawFrameAndUpload();
+    };
+  } else {
+    drawFrameAndUpload();
+  }
 }
 
 document.getElementById('file-input').onchange = (e) => {
