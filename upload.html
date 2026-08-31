@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Golden Fiesta Camera</title>
+<html><head><meta charset="utf-8"><title>Teacher's Day Camera</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📸</text></svg>">
 <style>
@@ -30,6 +30,10 @@ h2{margin:0 0 10px}
   background:#000;color:#0f0;padding:4px 8px;border-radius:8px;
   text-align:center;letter-spacing:2px;flex-shrink:0
 }
+#hide-controls-wrap{
+  display:flex;align-items:center;gap:3px;font-size:12px;cursor:pointer;white-space:nowrap;background:#333;padding:4px 6px;border-radius:6px;flex-shrink:0
+}
+#hide-controls-wrap input{cursor:pointer;margin:0}
 
 #options-bar {
   display: flex;
@@ -95,7 +99,7 @@ h2{margin:0 0 10px}
 canvas{display:none}
 </style>
 </head><body>
-<h2>Golden Fiesta 2026</h2>
+<h2>Teacher's Day 2026</h2>
 <div id="cam-container">
   <div id="topbar">
     <select id="colour">
@@ -107,6 +111,9 @@ canvas{display:none}
       <button class="cnt-btn" id="dec">−</button><button class="cnt-btn" id="inc">+</button>
     </div>
     <div id="numDisplay">01</div>
+    <label id="hide-controls-wrap" title="Hide Colour & Number">
+      <input type="checkbox" id="hideDetails"> Hide
+    </label>
   </div>
   
   <div id="options-bar">
@@ -150,6 +157,12 @@ document.getElementById('showUpload').onchange = (e) => {
 };
 document.getElementById('showOverlay').onchange = (e) => {
   document.getElementById('overlay').style.display = e.target.checked ? 'block' : 'none';
+};
+document.getElementById('hideDetails').onchange = (e) => {
+  const hidden = e.target.checked;
+  document.getElementById('colour').style.display = hidden ? 'none' : 'block';
+  document.getElementById('counter-wrap').style.display = hidden ? 'none' : 'flex';
+  document.getElementById('numDisplay').style.display = hidden ? 'none' : 'block';
 };
 
 let currentNum=parseInt(localStorage.getItem('photoNum')||'1');
